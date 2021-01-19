@@ -1,0 +1,15 @@
+syntax="proto3";
+package member;
+option go_package = "monorepo/services/user-service/api/proto/member";
+
+service MemberHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}

@@ -1,0 +1,15 @@
+syntax="proto3";
+package event;
+option go_package = "monorepo/services/line-chatbot/api/proto/event";
+
+service EventHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}

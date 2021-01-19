@@ -1,0 +1,15 @@
+syntax="proto3";
+package chatbot;
+option go_package = "monorepo/services/line-chatbot/api/proto/chatbot";
+
+service ChatbotHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}

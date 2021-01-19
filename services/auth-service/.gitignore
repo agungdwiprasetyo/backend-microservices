@@ -1,0 +1,7 @@
+bin
+vendor
+main_service.go
+auth-service
+coverage.txt
+*.rsa
+*.rsa.pub

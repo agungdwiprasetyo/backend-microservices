@@ -12,40 +12,48 @@
 
 This repository explain implementation of Go for building multiple microservices using a single codebase. Using [Standard Golang Project Layout](https://github.com/golang-standards/project-layout) and [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
-### Create new service
+## Create new service (for new project)
 ```
-make init service={{service_name}} modules={{module_a}},{{module_b}}
+$ make init
+```
+If include GRPC handler, run `$ make proto service={{service_name}}` after init service for generate rpc files from proto (must install `protoc` compiler min version libprotoc 3.14.0)
+
+## Run specific service
+```
+$ make run service={{service_name}}
 ```
 
-### Run service
+## Add module(s) in specific service (project)
 ```
-make run service={{service_name}}
-```
-
-### Add new modules in existing service
-```
-make add-module service={{service_name}} modules={{module_c}},{{module_d}}
+$ make add-module service={{service_name}}
 ```
 
-### Create docker image a service
+## Run unit test and calculate code coverage
+* **Generate mocks first (using [mockery](https://github.com/vektra/mockery)):**
 ```
-make docker service={{service_name}}
+$ make mocks service={{service_name}}
+```
+* **Run test:**
+```
+$ make test service={{service_name}}
+```
+
+## Run sonar scanner
+```
+$ make sonar level={{level}} service={{service_name}}
+```
+{{level}} is service environment, example is one of `dev`, `staging`, or `prod`
+
+## Create docker image a service
+```
+$ make docker service={{service_name}}
 ```
 
 ## Services
 
-* [**Auth Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/cmd/auth-service)
-* [**Line Chatbot**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/cmd/line-chatbot#line-chatbot-service)
-* [**Notification Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/cmd/notification-service)
-* [**Storage Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/cmd/storage-service)
-* [**User Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/cmd/user-service)
+* [**Auth Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/auth-service)
+* [**Line Chatbot**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/line-chatbot#line-chatbot-service)
+* [**Notification Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/notification-service)
+* [**Storage Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/storage-service)
+* [**User Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/user-service)
 
-## Service handlers example:
-* [**Example Cron worker in delivery layer**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/pkg/codebase/app/cron_worker)
-* [**Example Kafka consumer in delivery layer**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/pkg/codebase/app/kafka_worker)
-* [**Example Redis subscriber in delivery layer**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/pkg/codebase/app/redis_worker)
-* [**Example Task queue worker in delivery layer**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/pkg/codebase/app/task_queue_worker)
-
-
-## Todo
-- [x] ~~Add task queue worker like celery~~ Add UI for manage task queue worker

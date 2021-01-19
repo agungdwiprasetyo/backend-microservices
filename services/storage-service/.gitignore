@@ -1,0 +1,5 @@
+bin
+vendor
+main_service.go
+storage-service
+coverage.txt

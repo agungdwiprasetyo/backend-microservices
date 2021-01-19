@@ -1,11 +1,11 @@
 # Stage 1
-FROM golang:1.12.7-alpine3.10 AS dependency_builder
+FROM golang:1.14.9-alpine3.12 AS dependency_builder
 
 WORKDIR /go/src
 ENV GO111MODULE=on
 
 RUN apk update
-RUN apk add --no-cache bash ca-certificates git make
+RUN apk add --no-cache bash ca-certificates git
 
 COPY go.mod .
 COPY go.sum .
@@ -18,9 +18,11 @@ FROM dependency_builder AS service_builder
 ARG SERVICE_NAME
 WORKDIR /usr/app
 
-COPY . .
-RUN make prepare service=$SERVICE_NAME
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -o bin
+COPY sdk sdk
+COPY services/$SERVICE_NAME services/$SERVICE_NAME
+COPY go.mod .
+COPY go.sum .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -o bin services/$SERVICE_NAME/*.go
 
 # Stage 3
 FROM alpine:latest  
@@ -28,13 +30,14 @@ FROM alpine:latest
 ARG SERVICE_NAME
 RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /root/
+ENV WORKDIR=services/$SERVICE_NAME/
 
-RUN mkdir -p /root/api/$SERVICE_NAME
-RUN mkdir -p /root/cmd/$SERVICE_NAME
-RUN mkdir -p /root/config/key
+RUN mkdir -p /root/services/$SERVICE_NAME
+RUN mkdir -p /root/services/$SERVICE_NAME/api
+RUN mkdir -p /root/services/$SERVICE_NAME/api/configs
 COPY --from=service_builder /usr/app/bin bin
-COPY --from=service_builder /usr/app/cmd/$SERVICE_NAME/.env /root/cmd/$SERVICE_NAME/.env
-COPY --from=service_builder /usr/app/api/$SERVICE_NAME /root/api/$SERVICE_NAME
-COPY --from=service_builder /usr/app/config/key /root/config/key
+COPY --from=service_builder /usr/app/services/$SERVICE_NAME/.env /root/services/$SERVICE_NAME/.env
+COPY --from=service_builder /usr/app/services/$SERVICE_NAME/api /root/services/$SERVICE_NAME/api
+COPY --from=service_builder /usr/app/services/$SERVICE_NAME/configs /root/services/$SERVICE_NAME/configs
 
 ENTRYPOINT ["./bin"]

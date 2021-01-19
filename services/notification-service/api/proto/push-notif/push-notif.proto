@@ -1,0 +1,15 @@
+syntax="proto3";
+package pushnotif;
+option go_package = "monorepo/services/notification-service/api/proto/push-notif";
+
+service PushNotifHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}
