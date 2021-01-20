@@ -42,10 +42,8 @@ func (h *RestHandler) Mount(root *echo.Group) {
 func (h *RestHandler) hello(c echo.Context) error {
 	trace := tracer.StartTrace(c.Request().Context(), "DeliveryREST:Hello")
 	defer trace.Finish()
-	ctx := trace.Context()
 
 	tokenClaim := c.Get(string(candishared.ContextKeyTokenClaim)).(*candishared.TokenClaim) // must using HTTPBearerAuth in middleware for this handler
 
-	return wrapper.NewHTTPResponse(http.StatusOK, h.uc.Hello(ctx) + ", with your session (" + tokenClaim.Audience + ")").JSON(c.Response())
+	return wrapper.NewHTTPResponse(http.StatusOK, "hello, with your session ("+tokenClaim.Audience+")").JSON(c.Response())
 }
-
