@@ -22,4 +22,6 @@ jobs:
       run: make test service=auth-service
 
     - name: Build
-      run: make docker service=auth-service
+      run: |
+        make prepare service=auth-service
+        make docker service=auth-service
