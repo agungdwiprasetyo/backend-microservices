@@ -3,6 +3,11 @@ backend-microservices
 bin
 .env
 main_service.go
-
 *.pem
 *.key
+.vscode/
+__debug_bin
+coverage.txt
+mocks/
+.DS_Store
+.scannerwork/
