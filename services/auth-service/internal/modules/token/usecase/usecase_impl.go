@@ -67,7 +67,7 @@ func (uc *tokenUsecaseImpl) Generate(ctx context.Context, payload *domain.Claim)
 			key = uc.privateKey
 		}
 		claims := jwt.MapClaims{
-			"iss":  "agungdwiprasetyo",
+			"iss":  "agungdwiprasetyo.com",
 			"exp":  exp.Unix(),
 			"iat":  now.Unix(),
 			"did":  payload.DeviceID,
