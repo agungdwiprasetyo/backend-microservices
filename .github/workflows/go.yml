@@ -18,6 +18,14 @@ jobs:
       with:
         go-version: 1.15
 
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
     - name: Test
       run: make test service=auth-service
 
