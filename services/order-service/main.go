@@ -22,8 +22,6 @@ func main() {
 		}
 	}()
 
-	fmt.Println("development pertama")
-
 	cfg := config.Init(serviceName)
 	defer cfg.Exit()
 
