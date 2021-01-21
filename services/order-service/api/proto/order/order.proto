@@ -1,0 +1,15 @@
+syntax="proto3";
+package order;
+option go_package = "monorepo/services/order-service/api/proto/order";
+
+service OrderHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}
