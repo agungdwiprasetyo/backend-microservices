@@ -13,10 +13,11 @@
 This repository explain implementation of Go for building multiple microservices using a single codebase. Using [Standard Golang Project Layout](https://github.com/golang-standards/project-layout) and [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 ## Create new service (for new project)
+Please install [**candi**](https://github.com/agungdwiprasetyo/candi) CLI first (min version v1.3.3), and then:
 ```
 $ make init
 ```
-If include GRPC handler, run `$ make proto service={{service_name}}` after init service for generate rpc files from proto (must install `protoc` compiler min version libprotoc 3.14.0)
+If include GRPC handler, run `$ make proto service={{service_name}}` after init service for generate rpc files from proto (must install `protoc` compiler min version `libprotoc 3.14.0`)
 
 ## Run specific service
 ```
@@ -42,7 +43,7 @@ $ make test service={{service_name}}
 ```
 $ make sonar level={{level}} service={{service_name}}
 ```
-{{level}} is service environment, example is one of `dev`, `staging`, or `prod`
+`{{level}}` is service environment, example is one of `dev`, `staging`, or `prod`
 
 ## Create docker image a service
 ```
@@ -56,4 +57,3 @@ $ make docker service={{service_name}}
 * [**Notification Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/notification-service)
 * [**Storage Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/storage-service)
 * [**User Service**](https://github.com/agungdwiprasetyo/backend-microservices/tree/master/services/user-service)
-

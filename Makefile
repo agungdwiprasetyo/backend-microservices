@@ -10,10 +10,10 @@ prepare: check
 	@if [ ! -f services/$(service)/.env ]; then cp services/$(service)/.env.sample services/$(service)/.env; fi;
 
 init:
-	candi -gomod=monorepo/services
+	@candi -packageprefix=monorepo/services -withgomod=false -protooutputpkg=monorepo/sdk -output=services/ -scope=1
 
 add-module: check
-	candi -gomod=monorepo/services -servicename=$(service)
+	@candi -packageprefix=monorepo/services -withgomod=false -protooutputpkg=monorepo/sdk -output=services/ -servicename=$(service) -scope=2
 
 build: check
 	@go build -o services/$(service)/bin services/$(service)/*.go
@@ -33,12 +33,10 @@ docker: check
 run-container:
 	docker run --name=$(service) --network="host" -d $(service)
 
-# mocks all interfaces for unit test
-mocks: check
-	@echo "\x1b[32;1m>>> generate mocks for all interfaces type in service $(service)\x1b[0m"
+# mocks all interfaces in sdk for unit test
+mocks:
 	@mockery --all --keeptree --dir=sdk --output=./sdk/mocks
 	@if [ -f sdk/mocks/Option.go ]; then rm sdk/mocks/Option.go; fi;
-	@mockery --all --keeptree --dir=services/$(service) --output=./services/$(service)/mocks
 
 # unit test & calculate code coverage from selected service (please run mocks before run this rule)
 test: check
@@ -63,4 +61,4 @@ generate-rsa-key:
 	sh scripts/generate_rsa_key.sh
 
 clear:
-	rm bin backend-microservices
+	rm -rf sdk/mocks services/$(service)/mocks services/$(service)/bin bin
