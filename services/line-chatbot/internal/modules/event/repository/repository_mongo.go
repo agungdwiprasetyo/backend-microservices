@@ -86,7 +86,7 @@ func (r *eventRepoMongo) Count(ctx context.Context, filter *candishared.Filter) 
 
 func (r *eventRepoMongo) Save(ctx context.Context, data *domain.Event) <-chan error {
 	output := make(chan error)
-	go func() {
+	go tracer.WithTraceFunc(ctx, "EventRepo:Save", func(ctx context.Context, tags map[string]interface{}) {
 		defer close(output)
 		var err error
 
@@ -107,6 +107,6 @@ func (r *eventRepoMongo) Save(ctx context.Context, data *domain.Event) <-chan er
 		}
 
 		output <- err
-	}()
+	})
 	return output
 }

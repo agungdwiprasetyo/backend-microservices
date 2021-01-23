@@ -79,7 +79,7 @@ func (uc *chatbotUsecaseImpl) ProcessCallback(ctx context.Context, events []*lin
 
 		switch event.Type {
 		case linebot.EventTypeJoin:
-			uc.ReplyMessage(event, fmt.Sprintf("Hello %s :)", profileResp.DisplayName))
+			uc.ReplyMessage(ctx, event, fmt.Sprintf("Hello %s :)", profileResp.DisplayName))
 
 		case linebot.EventTypeMessage:
 			switch message := event.Message.(type) {
@@ -109,7 +109,7 @@ func (uc *chatbotUsecaseImpl) ProcessCallback(ctx context.Context, events []*lin
 				}
 
 				responseText = strings.TrimSpace(responseText)
-				err := uc.ReplyMessage(event, responseText)
+				err := uc.ReplyMessage(ctx, event, responseText)
 				if err != nil {
 					eventLog.Error = candihelper.ToStringPtr(err.Error())
 				}
@@ -127,7 +127,14 @@ func (uc *chatbotUsecaseImpl) ProcessCallback(ctx context.Context, events []*lin
 	return nil
 }
 
-func (uc *chatbotUsecaseImpl) ReplyMessage(event *linebot.Event, messages ...string) error {
+func (uc *chatbotUsecaseImpl) ReplyMessage(ctx context.Context, event *linebot.Event, messages ...string) error {
+	trace := tracer.StartTrace(ctx, "ChatbotUsecase:ReplyMessage")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	tracer.LogKV(ctx, "event", event)
+	tracer.Log(ctx, "messages", messages)
+
 	var lineMessages []linebot.SendingMessage
 	for _, msg := range messages {
 		lineMessages = append(lineMessages, linebot.NewTextMessage(msg))

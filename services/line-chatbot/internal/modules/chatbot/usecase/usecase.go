@@ -11,6 +11,6 @@ import (
 // ChatbotUsecase abstraction
 type ChatbotUsecase interface {
 	ProcessCallback(ctx context.Context, events []*linebot.Event) error
-	ReplyMessage(event *linebot.Event, messages ...string) error
+	ReplyMessage(ctx context.Context, event *linebot.Event, messages ...string) error
 	PushMessageToChannel(ctx context.Context, to, title, message string) error
 }
