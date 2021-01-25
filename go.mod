@@ -12,5 +12,5 @@ require (
 	go.mongodb.org/mongo-driver v1.4.3
 	google.golang.org/grpc v1.33.1
 	google.golang.org/protobuf v1.25.0
-	pkg.agungdwiprasetyo.com/candi v1.3.2
+	pkg.agungdwiprasetyo.com/candi v1.3.5
 )
