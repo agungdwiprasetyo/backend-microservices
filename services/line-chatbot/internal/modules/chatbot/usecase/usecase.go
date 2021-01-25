@@ -4,6 +4,7 @@ package usecase
 
 import (
 	"context"
+	"monorepo/services/line-chatbot/internal/modules/chatbot/domain"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -12,5 +13,5 @@ import (
 type ChatbotUsecase interface {
 	ProcessCallback(ctx context.Context, events []*linebot.Event) error
 	ReplyMessage(ctx context.Context, event *linebot.Event, messages ...string) error
-	PushMessageToChannel(ctx context.Context, to, title, message string) error
+	PushMessageToChannel(ctx context.Context, payload domain.PushMessagePayload) error
 }

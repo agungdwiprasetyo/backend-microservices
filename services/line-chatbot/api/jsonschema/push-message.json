@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "push-message",
+	"title": "json schema type",
+	"type": "object",
+	"properties": {
+		"to": {
+			"type": "string",
+			"minLength": 1
+		},
+		"title": {
+			"type": "string",
+			"minLength": 1
+		},
+		"message": {
+			"type": "string",
+			"minLength": 1
+		}
+	},
+	"required": ["to", "title", "message"]
+}

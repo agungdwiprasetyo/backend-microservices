@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"monorepo/services/line-chatbot/internal/modules/chatbot/domain"
 	eventdomain "monorepo/services/line-chatbot/internal/modules/event/domain"
 	"monorepo/services/line-chatbot/pkg/helper"
 	shareddomain "monorepo/services/line-chatbot/pkg/shared/domain"
@@ -147,15 +148,15 @@ func (uc *chatbotUsecaseImpl) ReplyMessage(ctx context.Context, event *linebot.E
 	return nil
 }
 
-func (uc *chatbotUsecaseImpl) PushMessageToChannel(ctx context.Context, to, title, message string) error {
+func (uc *chatbotUsecaseImpl) PushMessageToChannel(ctx context.Context, payload domain.PushMessagePayload) error {
 	var lineMessage shareddomain.LineMessage
 
-	lineMessage.To = to
+	lineMessage.To = payload.To
 	lineMessage.Messages = append(lineMessage.Messages, shareddomain.LineContentMessage{
-		Type: "flex", AltText: title, Contents: shareddomain.LineContentFormat{
+		Type: "flex", AltText: payload.Title, Contents: shareddomain.LineContentFormat{
 			Type: "bubble", Body: shareddomain.LineContentBody{
 				Type: "box", Layout: "horizontal", Contents: []shareddomain.LineContent{
-					{Type: "text", Text: message},
+					{Type: "text", Text: payload.Message},
 				},
 			},
 		},

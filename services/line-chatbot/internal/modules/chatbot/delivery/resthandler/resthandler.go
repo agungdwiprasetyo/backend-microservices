@@ -13,6 +13,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/line/line-bot-sdk-go/linebot"
 
+	"monorepo/services/line-chatbot/internal/modules/chatbot/domain"
 	"monorepo/services/line-chatbot/internal/modules/chatbot/usecase"
 	"monorepo/services/line-chatbot/pkg/shared"
 
@@ -87,16 +88,16 @@ func (h *RestHandler) pushMessage(c echo.Context) error {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
-	var message struct {
-		To      string `json:"to"`
-		Title   string `json:"title"`
-		Message string `json:"message"`
+	if err := h.validator.ValidateDocument("push-message", body); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusBadRequest, "Failed validate payload", err).JSON(c.Response())
 	}
-	if err = json.Unmarshal(body, &message); err != nil {
+
+	var payload domain.PushMessagePayload
+	if err = json.Unmarshal(body, &payload); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
-	if err := h.uc.PushMessageToChannel(c.Request().Context(), message.To, message.Title, message.Message); err != nil {
+	if err := h.uc.PushMessageToChannel(c.Request().Context(), payload); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
