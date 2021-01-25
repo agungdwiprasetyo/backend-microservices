@@ -28,7 +28,7 @@ func NewEventUsecase(deps dependency.Dependency) EventUsecase {
 	}
 }
 
-func (uc *eventUsecaseImpl) FindAll(ctx context.Context, filter *candishared.Filter) (events []domain.Event, meta *candishared.Meta, err error) {
+func (uc *eventUsecaseImpl) FindAll(ctx context.Context, filter *candishared.Filter) (events []domain.Event, meta candishared.Meta, err error) {
 	filter.CalculateOffset()
 
 	count := uc.repoMongo.EventRepo.Count(ctx, filter)

@@ -11,5 +11,5 @@ import (
 
 // EventUsecase abstraction
 type EventUsecase interface {
-	FindAll(ctx context.Context, filter *candishared.Filter) (events []domain.Event, meta *candishared.Meta, err error)
+	FindAll(ctx context.Context, filter *candishared.Filter) (events []domain.Event, meta candishared.Meta, err error)
 }

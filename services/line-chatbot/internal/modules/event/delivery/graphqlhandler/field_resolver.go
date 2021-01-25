@@ -57,12 +57,12 @@ func (r *EventMessage) Response() string {
 }
 
 type EventListResolver struct {
-	m      *candishared.Meta
+	m      candishared.Meta
 	events []*EventResolver
 }
 
-func (r *EventListResolver) Meta() *candishared.MetaResolver {
-	return r.m.ToResolver()
+func (r *EventListResolver) Meta() *candishared.Meta {
+	return &r.m
 }
 func (r *EventListResolver) Data() []*EventResolver {
 	return r.events
