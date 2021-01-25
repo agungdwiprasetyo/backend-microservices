@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/labstack/echo"
 	"pkg.agungdwiprasetyo.com/candi/candiutils"
 )
 
@@ -35,9 +36,15 @@ func (t *translatorHTTPImpl) Translate(ctx context.Context, from, to, text strin
 	value.Set("lang", from+"-"+to)
 	value.Add("text", text)
 
-	resp, _, err := t.httpReq.Do(ctx, http.MethodPost, shared.GetEnv().TranslatorHost, []byte(value.Encode()), nil)
+	resp, respCode, err := t.httpReq.Do(ctx, http.MethodPost, shared.GetEnv().TranslatorHost, []byte(value.Encode()), map[string]string{
+		echo.HeaderContentType: echo.MIMEApplicationForm,
+	})
 	if err != nil {
-		return
+		return err.Error()
+	}
+
+	if respCode >= http.StatusBadRequest {
+		return "<Cannot process request>"
 	}
 
 	var response struct {
