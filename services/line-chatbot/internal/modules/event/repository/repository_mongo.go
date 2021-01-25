@@ -90,6 +90,8 @@ func (r *eventRepoMongo) Save(ctx context.Context, data *domain.Event) <-chan er
 		defer close(output)
 		var err error
 
+		tracer.Log(ctx, "data", data)
+
 		if data.ID.IsZero() {
 			data.ID = primitive.NewObjectID()
 			_, err = r.readDB.Collection(r.collection).InsertOne(ctx, data)

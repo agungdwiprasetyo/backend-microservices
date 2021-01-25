@@ -132,7 +132,7 @@ func (uc *chatbotUsecaseImpl) ReplyMessage(ctx context.Context, event *linebot.E
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	tracer.LogKV(ctx, "event", event)
+	tracer.Log(ctx, "event", event)
 	tracer.Log(ctx, "messages", messages)
 
 	var lineMessages []linebot.SendingMessage
