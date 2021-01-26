@@ -7,6 +7,8 @@ type Environment struct {
 	// more additional environment with struct tag is environment key example:
 	// ExampleHost string `env:"EXAMPLE_HOST"`
 
+	AuthServiceHost  string `env:"AUTH_SERVICE_HOST"`
+	AuthServiceKey   string `env:"AUTH_SERVICE_KEY"`
 	LineClientSecret string `env:"LINE_CLIENT_SECRET"`
 	LineClientToken  string `env:"LINE_CLIENT_TOKEN"`
 	ChatbotHost      string `env:"CHATBOT_HOST"`

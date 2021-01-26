@@ -5,6 +5,7 @@ package configs
 import (
 	"context"
 
+	authservice "monorepo/sdk/auth-service"
 	"monorepo/services/line-chatbot/pkg/helper"
 	"monorepo/services/line-chatbot/pkg/shared"
 	"monorepo/services/line-chatbot/pkg/shared/repository"
@@ -46,10 +47,12 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 			helper.LineClient: lineClient,
 		}
 
+		authService := authservice.NewAuthServiceGRPC(sharedEnv.AuthServiceHost, sharedEnv.AuthServiceKey)
+
 		// inject all service dependencies
 		// See all option in dependency package
 		deps = dependency.InitDependency(
-			dependency.SetMiddleware(middleware.NewMiddleware(&shared.DefaultTokenValidator{})),
+			dependency.SetMiddleware(middleware.NewMiddleware(authService)),
 			dependency.SetValidator(validator.NewValidator()),
 			dependency.SetBroker(brokerDeps),
 			dependency.SetRedisPool(redisDeps),
