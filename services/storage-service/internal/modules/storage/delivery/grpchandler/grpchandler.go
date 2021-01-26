@@ -16,6 +16,7 @@ import (
 
 	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
 	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdwiprasetyo.com/candi/tracer"
 )
 
 // GRPCHandler rpc handler
@@ -42,9 +43,10 @@ func (h *GRPCHandler) Register(server *grpc.Server, mwGroup *types.MiddlewareGro
 
 // Upload method
 func (h *GRPCHandler) Upload(stream proto.StorageService_UploadServer) (err error) {
-	h.mw.GRPCBasicAuth(stream.Context())
+	trace := tracer.StartTrace(stream.Context(), "StorageDeliveryGRPC:Upload")
+	defer trace.Finish()
+	ctx := trace.Context()
 
-	ctx := stream.Context()
 	meta, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return grpc.Errorf(codes.Unauthenticated, "missing context metadata")

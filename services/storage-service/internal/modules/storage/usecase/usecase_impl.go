@@ -46,7 +46,7 @@ func (uc *storageUsecaseImpl) Hello(ctx context.Context) (msg string) {
 func (uc *storageUsecaseImpl) Upload(ctx context.Context, buff []byte, metadata *domain.UploadMetadata) <-chan candishared.Result {
 	output := make(chan candishared.Result)
 
-	go func() {
+	go tracer.WithTraceFunc(ctx, "StorageUsecase:Upload", func(ctx context.Context, m map[string]interface{}) {
 		defer func() {
 			if r := recover(); r != nil {
 				output <- candishared.Result{Error: fmt.Errorf("%v", r)}
@@ -62,7 +62,7 @@ func (uc *storageUsecaseImpl) Upload(ctx context.Context, buff []byte, metadata 
 		}
 
 		fmt.Println("Uploaded", " size: ", n, "Successfully.", "localhost:9000/tong/...")
-	}()
+	})
 
 	return output
 }

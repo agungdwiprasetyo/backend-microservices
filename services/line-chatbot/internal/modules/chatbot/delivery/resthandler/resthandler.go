@@ -18,6 +18,7 @@ import (
 	"monorepo/services/line-chatbot/pkg/shared"
 
 	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdwiprasetyo.com/candi/tracer"
 	"pkg.agungdwiprasetyo.com/candi/wrapper"
 )
 
@@ -41,10 +42,13 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	bot := root.Group("/v1/bot")
 
 	bot.POST("/callback", h.callback)
-	bot.POST("/pushmessage", h.pushMessage, h.mw.HTTPBasicAuth(false))
+	bot.POST("/pushmessage", h.pushMessage, h.mw.HTTPBearerAuth())
 }
 
 func (h *RestHandler) callback(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "ChatbotDeliveryREST:Callback")
+	defer trace.Finish()
+	ctx := trace.Context()
 
 	req := c.Request()
 	body, err := ioutil.ReadAll(req.Body)
@@ -75,7 +79,7 @@ func (h *RestHandler) callback(c echo.Context) error {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
-	if err := h.uc.ProcessCallback(c.Request().Context(), request.Events); err != nil {
+	if err := h.uc.ProcessCallback(ctx, request.Events); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
@@ -83,6 +87,10 @@ func (h *RestHandler) callback(c echo.Context) error {
 }
 
 func (h *RestHandler) pushMessage(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "ChatbotDeliveryREST:PushMessage")
+	defer trace.Finish()
+	ctx := trace.Context()
+
 	body, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
@@ -97,7 +105,7 @@ func (h *RestHandler) pushMessage(c echo.Context) error {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
-	if err := h.uc.PushMessageToChannel(c.Request().Context(), payload); err != nil {
+	if err := h.uc.PushMessageToChannel(ctx, payload); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 

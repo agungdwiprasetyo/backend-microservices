@@ -14,6 +14,7 @@ import (
 
 	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
 	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdwiprasetyo.com/candi/tracer"
 )
 
 // GRPCHandler rpc handler
@@ -36,11 +37,15 @@ func (h *GRPCHandler) Register(server *grpc.Server, mwGroup *types.MiddlewareGro
 
 	// register middleware for method
 	mwGroup.AddProto(proto.File_token_token_proto, "GenerateToken", h.mw.GRPCBasicAuth)
-	mwGroup.AddProto(proto.File_token_token_proto, "ValidateToken", h.mw.GRPCBasicAuth)
+	// mwGroup.AddProto(proto.File_token_token_proto, "ValidateToken", h.mw.GRPCBasicAuth)
 }
 
 // GenerateToken rpc
 func (h *GRPCHandler) GenerateToken(ctx context.Context, req *proto.UserData) (*proto.ResponseGenerate, error) {
+	trace := tracer.StartTrace(ctx, "TokenDeliveryGRPC:GenerateToken")
+	defer trace.Finish()
+	ctx = trace.Context()
+
 	var tokenClaim domain.Claim
 	tokenClaim.User.ID = req.ID
 	tokenClaim.User.Username = req.Username
@@ -62,6 +67,9 @@ func (h *GRPCHandler) GenerateToken(ctx context.Context, req *proto.UserData) (*
 
 // ValidateToken rpc
 func (h *GRPCHandler) ValidateToken(ctx context.Context, req *proto.PayloadValidate) (*proto.ResponseValidation, error) {
+	trace := tracer.StartTrace(ctx, "TokenDeliveryGRPC:ValidateToken")
+	defer trace.Finish()
+	ctx = trace.Context()
 
 	result := <-h.uc.Validate(ctx, req.Token)
 	if result.Error != nil {

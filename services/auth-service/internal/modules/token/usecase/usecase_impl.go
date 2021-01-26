@@ -15,6 +15,7 @@ import (
 	"pkg.agungdwiprasetyo.com/candi/candishared"
 	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
 	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdwiprasetyo.com/candi/tracer"
 )
 
 const (
@@ -104,7 +105,7 @@ func (uc *tokenUsecaseImpl) Refresh(ctx context.Context, token string) <-chan ca
 func (uc *tokenUsecaseImpl) Validate(ctx context.Context, tokenString string) <-chan candishared.Result {
 	output := make(chan candishared.Result)
 
-	go func() {
+	go tracer.WithTraceFunc(ctx, "TokenUsecase:Validate", func(ctx context.Context, tags map[string]interface{}) {
 		defer close(output)
 
 		tokenParse, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -148,7 +149,7 @@ func (uc *tokenUsecaseImpl) Validate(ctx context.Context, tokenString string) <-
 		tokenClaim.User.Username, _ = userData["username"].(string)
 
 		output <- candishared.Result{Data: &tokenClaim}
-	}()
+	})
 
 	return output
 }
