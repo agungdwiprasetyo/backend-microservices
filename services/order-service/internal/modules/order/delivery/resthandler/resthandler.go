@@ -36,7 +36,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
 	order := v1Root.Group("/order")
-	order.GET("", h.hello, h.mw.HTTPBearerAuth())
+	order.GET("", h.hello, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 }
 
 func (h *RestHandler) hello(c echo.Context) error {
@@ -46,6 +46,5 @@ func (h *RestHandler) hello(c echo.Context) error {
 
 	tokenClaim := c.Get(string(candishared.ContextKeyTokenClaim)).(*candishared.TokenClaim) // must using HTTPBearerAuth in middleware for this handler
 
-	return wrapper.NewHTTPResponse(http.StatusOK, h.uc.Hello(ctx) + ", with your session (" + tokenClaim.Audience + ")").JSON(c.Response())
+	return wrapper.NewHTTPResponse(http.StatusOK, h.uc.Hello(ctx)+", with your session ("+tokenClaim.Audience+")").JSON(c.Response())
 }
-

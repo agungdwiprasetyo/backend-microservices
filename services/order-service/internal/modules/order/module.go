@@ -5,6 +5,7 @@ package order
 import (
 	"monorepo/services/order-service/internal/modules/order/delivery/graphqlhandler"
 	"monorepo/services/order-service/internal/modules/order/delivery/grpchandler"
+
 	// "monorepo/services/order-service/internal/modules/order/delivery/resthandler"
 	// "monorepo/services/order-service/internal/modules/order/delivery/workerhandler"
 	"monorepo/services/order-service/pkg/shared/usecase"
@@ -20,7 +21,7 @@ const (
 
 // Module model
 type Module struct {
-	restHandler    interfaces.EchoRestHandler
+	restHandler    interfaces.RESTHandler
 	grpcHandler    interfaces.GRPCHandler
 	graphqlHandler interfaces.GraphQLHandler
 
@@ -46,8 +47,8 @@ func NewModule(deps dependency.Dependency) *Module {
 	return &mod
 }
 
-// RestHandler method
-func (m *Module) RestHandler() interfaces.EchoRestHandler {
+// RESTHandler method
+func (m *Module) RESTHandler() interfaces.RESTHandler {
 	return m.restHandler
 }
 

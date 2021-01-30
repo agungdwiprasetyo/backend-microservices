@@ -42,7 +42,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	bot := root.Group("/v1/bot")
 
 	bot.POST("/callback", h.callback)
-	bot.POST("/pushmessage", h.pushMessage, h.mw.HTTPBearerAuth())
+	bot.POST("/pushmessage", h.pushMessage, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 }
 
 func (h *RestHandler) callback(c echo.Context) error {

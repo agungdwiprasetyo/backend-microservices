@@ -20,7 +20,7 @@ const (
 
 // Module model
 type Module struct {
-	restHandler    interfaces.EchoRestHandler
+	restHandler    interfaces.RESTHandler
 	grpcHandler    interfaces.GRPCHandler
 	graphqlHandler interfaces.GraphQLHandler
 
@@ -37,7 +37,7 @@ func NewModule(deps dependency.Dependency) *Module {
 	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
 
 	mod.workerHandlers = map[types.Worker]interfaces.WorkerHandler{
-		types.Kafka:           workerhandler.NewKafkaHandler(usecaseUOW.Member(), deps.GetValidator()),
+		types.Kafka: workerhandler.NewKafkaHandler(usecaseUOW.Member(), deps.GetValidator()),
 		// types.Scheduler:       workerhandler.NewCronHandler(usecaseUOW.Member(), deps.GetValidator()),
 		// types.RedisSubscriber: workerhandler.NewRedisHandler(usecaseUOW.Member(), deps.GetValidator()),
 		// types.TaskQueue:       workerhandler.NewTaskQueueHandler(usecaseUOW.Member(), deps.GetValidator()),
@@ -46,8 +46,8 @@ func NewModule(deps dependency.Dependency) *Module {
 	return &mod
 }
 
-// RestHandler method
-func (m *Module) RestHandler() interfaces.EchoRestHandler {
+// RESTHandler method
+func (m *Module) RESTHandler() interfaces.RESTHandler {
 	return m.restHandler
 }
 

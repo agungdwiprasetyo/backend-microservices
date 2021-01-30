@@ -21,7 +21,7 @@ const (
 
 // Module model
 type Module struct {
-	restHandler    interfaces.EchoRestHandler
+	restHandler    interfaces.RESTHandler
 	grpcHandler    interfaces.GRPCHandler
 	graphqlHandler interfaces.GraphQLHandler
 
@@ -47,8 +47,8 @@ func NewModule(deps dependency.Dependency) *Module {
 	return &mod
 }
 
-// RestHandler method
-func (m *Module) RestHandler() interfaces.EchoRestHandler {
+// RESTHandler method
+func (m *Module) RESTHandler() interfaces.RESTHandler {
 	return m.restHandler
 }
 

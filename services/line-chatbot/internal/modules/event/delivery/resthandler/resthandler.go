@@ -36,7 +36,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
 	event := v1Root.Group("/event")
-	event.GET("", h.hello, h.mw.HTTPBearerAuth())
+	event.GET("", h.hello, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 }
 
 func (h *RestHandler) hello(c echo.Context) error {
