@@ -16,8 +16,13 @@ jobs:
       with:
         go-version: 1.15
 
+    - name: Prepare
+      run: |
+        echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
+        make prepare service=${{ env.SERVICE_NAME }}
+
     - name: Unit Test
-      run: make test service=${GITHUB_REF#refs/tags/dev/}
+      run: make test service=${{ env.SERVICE_NAME }}
 
     - name: Setup Docker Hub
       uses: docker/login-action@v1
@@ -37,9 +42,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    - name: Prepare
-      run: make prepare service=${GITHUB_REF#refs/tags/dev/}
-
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
@@ -48,8 +50,8 @@ jobs:
         file: ./Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         build-args: |
-          SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}
+          SERVICE_NAME=${{ env.SERVICE_NAME }}
         push: true
-        tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/${GITHUB_REF#refs/tags/dev/}:latest
+        tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.SERVICE_NAME }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
