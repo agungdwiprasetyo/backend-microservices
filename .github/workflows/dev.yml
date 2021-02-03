@@ -16,10 +16,11 @@ jobs:
       with:
         go-version: 1.15
 
+    - name: Setup environment
+      run: echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
+
     - name: Prepare
-      run: |
-        echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
-        make prepare service=${{ env.SERVICE_NAME }}
+      run: make prepare service=${{ env.SERVICE_NAME }}
 
     - name: Unit Test
       run: make test service=${{ env.SERVICE_NAME }}
