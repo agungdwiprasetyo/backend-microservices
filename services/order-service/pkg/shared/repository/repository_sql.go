@@ -9,7 +9,7 @@ import (
 	masterrepo "monorepo/services/order-service/internal/modules/master/repository"
 	orderrepo "monorepo/services/order-service/internal/modules/order/repository"
 
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 // RepoSQL uow
@@ -19,7 +19,7 @@ type RepoSQL struct {
 
 	// register all repository from modules
 	MasterRepo masterrepo.MasterRepository
-	OrderRepo orderrepo.OrderRepository
+	OrderRepo  orderrepo.OrderRepository
 }
 
 var (
@@ -42,7 +42,7 @@ func NewRepositorySQL(readDB, writeDB *sql.DB, tx *sql.Tx) *RepoSQL {
 	return &RepoSQL{
 		readDB: readDB, writeDB: writeDB, tx: tx,
 		MasterRepo: masterrepo.NewMasterRepoSQL(readDB, writeDB, tx),
-		OrderRepo: orderrepo.NewOrderRepoSQL(readDB, writeDB, tx),
+		OrderRepo:  orderrepo.NewOrderRepoSQL(readDB, writeDB, tx),
 	}
 }
 
@@ -100,4 +100,4 @@ func (r *RepoSQL) free() {
 	// make nil all repository
 	r.MasterRepo = nil
 	r.OrderRepo = nil
-}	
+}

@@ -8,10 +8,10 @@ import (
 
 	"monorepo/services/line-chatbot/internal/modules/event/usecase"
 
-	taskqueueworker "pkg.agungdwiprasetyo.com/candi/codebase/app/task_queue_worker"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 // TaskQueueHandler struct

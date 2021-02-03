@@ -4,9 +4,9 @@ package graphqlhandler
 
 import (
 	"monorepo/services/auth-service/internal/modules/token/usecase"
-	
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 // GraphQLHandler model

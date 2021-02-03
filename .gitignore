@@ -11,3 +11,4 @@ coverage.txt
 mocks/
 .DS_Store
 .scannerwork/
+example/

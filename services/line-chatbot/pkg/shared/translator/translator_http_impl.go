@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"pkg.agungdwiprasetyo.com/candi/candiutils"
+	"pkg.agungdp.dev/candi/candiutils"
 )
 
 // translatorHTTPImpl implementation

@@ -11,10 +11,10 @@ import (
 	"monorepo/services/notification-service/internal/modules/push-notif/domain"
 	"monorepo/services/notification-service/internal/modules/push-notif/usecase"
 
-	taskqueueworker "pkg.agungdwiprasetyo.com/candi/codebase/app/task_queue_worker"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/logger"
+	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/logger"
 )
 
 // RedisHandler struct

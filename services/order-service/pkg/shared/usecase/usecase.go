@@ -3,11 +3,11 @@
 package usecase
 
 import (
-	"sync"
 	masterusecase "monorepo/services/order-service/internal/modules/master/usecase"
 	orderusecase "monorepo/services/order-service/internal/modules/order/usecase"
+	"sync"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 )
 
 type (
@@ -19,7 +19,7 @@ type (
 
 	usecaseUow struct {
 		master masterusecase.MasterUsecase
-		order orderusecase.OrderUsecase
+		order  orderusecase.OrderUsecase
 	}
 )
 
@@ -31,7 +31,7 @@ func SetSharedUsecase(deps dependency.Dependency) {
 	once.Do(func() {
 		usecaseInst = &usecaseUow{
 			master: masterusecase.NewMasterUsecase(deps),
-			order: orderusecase.NewOrderUsecase(deps),
+			order:  orderusecase.NewOrderUsecase(deps),
 		}
 	})
 }

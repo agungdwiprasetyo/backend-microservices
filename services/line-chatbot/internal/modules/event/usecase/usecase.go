@@ -6,7 +6,7 @@ import (
 	"context"
 	"monorepo/services/line-chatbot/internal/modules/event/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // EventUsecase abstraction

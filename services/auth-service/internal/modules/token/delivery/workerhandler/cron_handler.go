@@ -8,10 +8,10 @@ import (
 
 	"monorepo/services/auth-service/internal/modules/token/usecase"
 
-	"pkg.agungdwiprasetyo.com/candi/candihelper"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 // CronHandler struct
@@ -30,7 +30,7 @@ func NewCronHandler(uc usecase.TokenUsecase, validator interfaces.Validator) *Cr
 
 // MountHandlers mount handler group
 func (h *CronHandler) MountHandlers(group *types.WorkerHandlerGroup) {
-	group.Add(candihelper.CronJobKeyToString("token-scheduler", "10s"), h.handleToken)
+	group.Add(candihelper.CronJobKeyToString("token-scheduler", "20:41:00@3s"), h.handleToken)
 }
 
 func (h *CronHandler) handleToken(ctx context.Context, message []byte) error {

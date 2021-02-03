@@ -9,9 +9,9 @@ import (
 	"monorepo/services/notification-service/internal/modules/push-notif/delivery/workerhandler"
 	"monorepo/services/notification-service/pkg/shared/usecase"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 const (

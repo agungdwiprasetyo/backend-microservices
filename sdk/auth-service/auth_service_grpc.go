@@ -13,9 +13,9 @@ import (
 	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"pkg.agungdwiprasetyo.com/candi/candishared"
-	"pkg.agungdwiprasetyo.com/candi/logger"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/candishared"
+	"pkg.agungdp.dev/candi/logger"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type authServiceGRPCImpl struct {

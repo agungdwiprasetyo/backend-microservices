@@ -5,7 +5,7 @@ package graphqlhandler
 import (
 	"context"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 type queryResolver struct {

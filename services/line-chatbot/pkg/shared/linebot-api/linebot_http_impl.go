@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"pkg.agungdwiprasetyo.com/candi/candiutils"
+	"pkg.agungdp.dev/candi/candiutils"
 )
 
 // botHTTP implementation

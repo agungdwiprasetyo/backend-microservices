@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	
-
-	"pkg.agungdwiprasetyo.com/candi/codebase/app"
-	"pkg.agungdwiprasetyo.com/candi/config"
+	"pkg.agungdp.dev/candi/codebase/app"
+	"pkg.agungdp.dev/candi/config"
 
 	service "monorepo/services/notification-service/internal"
 )

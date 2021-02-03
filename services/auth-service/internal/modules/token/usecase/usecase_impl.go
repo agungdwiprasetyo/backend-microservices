@@ -12,10 +12,12 @@ import (
 	"monorepo/services/auth-service/pkg/shared/repository"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"pkg.agungdwiprasetyo.com/candi/candishared"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/candishared"
+	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 const (
@@ -115,6 +117,8 @@ func (uc *tokenUsecaseImpl) Validate(ctx context.Context, tokenString string) <-
 			}
 			return uc.publicKey, nil
 		})
+
+		taskqueueworker.AddJob("token-task-two", 10, candihelper.ToBytes(tokenString))
 
 		var errToken error
 		switch ve := err.(type) {

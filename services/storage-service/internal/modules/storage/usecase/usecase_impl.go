@@ -3,19 +3,19 @@
 package usecase
 
 import (
-	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 
 	"monorepo/services/storage-service/internal/modules/storage/domain"
 	"monorepo/services/storage-service/pkg/shared/repository"
 
 	"github.com/minio/minio-go/v6"
-	"pkg.agungdwiprasetyo.com/candi/candishared"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/logger"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/candishared"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/logger"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type storageUsecaseImpl struct {
@@ -54,14 +54,18 @@ func (uc *storageUsecaseImpl) Upload(ctx context.Context, buff []byte, metadata 
 			close(output)
 		}()
 
-		n, err := uc.minioClient.PutObject("tong", metadata.Filename, bytes.NewReader(buff), -1,
-			minio.PutObjectOptions{ContentType: metadata.ContentType})
-		if err != nil {
+		// n, err := uc.minioClient.PutObject("tong", metadata.Filename, bytes.NewReader(buff), -1,
+		// 	minio.PutObjectOptions{ContentType: metadata.ContentType})
+		// if err != nil {
+		// 	logger.LogE(err.Error())
+		// 	panic(err)
+		// }
+
+		if err := ioutil.WriteFile(metadata.Folder+metadata.Filename, buff, 0644); err != nil {
 			logger.LogE(err.Error())
-			panic(err)
 		}
 
-		fmt.Println("Uploaded", " size: ", n, "Successfully.", "localhost:9000/tong/...")
+		// fmt.Println("Uploaded", " size: ", n, "Successfully.", "localhost:9000/tong/...")
 	})
 
 	return output

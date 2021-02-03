@@ -9,8 +9,8 @@ import (
 
 	"monorepo/services/notification-service/internal/modules/push-notif/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/candishared"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type mutationResolver struct {

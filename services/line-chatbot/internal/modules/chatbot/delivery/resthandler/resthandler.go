@@ -17,9 +17,9 @@ import (
 	"monorepo/services/line-chatbot/internal/modules/chatbot/usecase"
 	"monorepo/services/line-chatbot/pkg/shared"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
-	"pkg.agungdwiprasetyo.com/candi/wrapper"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
+	"pkg.agungdp.dev/candi/wrapper"
 )
 
 // RestHandler handler

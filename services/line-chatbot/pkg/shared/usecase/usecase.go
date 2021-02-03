@@ -3,11 +3,11 @@
 package usecase
 
 import (
-	"sync"
 	chatbotusecase "monorepo/services/line-chatbot/internal/modules/chatbot/usecase"
 	eventusecase "monorepo/services/line-chatbot/internal/modules/event/usecase"
+	"sync"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 )
 
 type (
@@ -19,7 +19,7 @@ type (
 
 	usecaseUow struct {
 		chatbot chatbotusecase.ChatbotUsecase
-		event eventusecase.EventUsecase
+		event   eventusecase.EventUsecase
 	}
 )
 
@@ -31,7 +31,7 @@ func SetSharedUsecase(deps dependency.Dependency) {
 	once.Do(func() {
 		usecaseInst = &usecaseUow{
 			chatbot: chatbotusecase.NewChatbotUsecase(deps),
-			event: eventusecase.NewEventUsecase(deps),
+			event:   eventusecase.NewEventUsecase(deps),
 		}
 	})
 }

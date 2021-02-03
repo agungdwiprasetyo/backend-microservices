@@ -6,7 +6,7 @@ import (
 	"context"
 	"monorepo/services/auth-service/internal/modules/token/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // TokenUsecase abstraction

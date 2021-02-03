@@ -3,11 +3,11 @@
 package usecase
 
 import (
-	"sync"
 	authusecase "monorepo/services/user-service/internal/modules/auth/usecase"
 	memberusecase "monorepo/services/user-service/internal/modules/member/usecase"
+	"sync"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 )
 
 type (
@@ -18,7 +18,7 @@ type (
 	}
 
 	usecaseUow struct {
-		auth authusecase.AuthUsecase
+		auth   authusecase.AuthUsecase
 		member memberusecase.MemberUsecase
 	}
 )
@@ -30,7 +30,7 @@ var once sync.Once
 func SetSharedUsecase(deps dependency.Dependency) {
 	once.Do(func() {
 		usecaseInst = &usecaseUow{
-			auth: authusecase.NewAuthUsecase(deps),
+			auth:   authusecase.NewAuthUsecase(deps),
 			member: memberusecase.NewMemberUsecase(deps),
 		}
 	})

@@ -6,7 +6,7 @@ import (
 	"context"
 	"database/sql"
 
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type eventRepoSQL struct {

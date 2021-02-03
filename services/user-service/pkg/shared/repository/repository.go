@@ -5,7 +5,7 @@ package repository
 import (
 	"sync"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 )
 
 var (

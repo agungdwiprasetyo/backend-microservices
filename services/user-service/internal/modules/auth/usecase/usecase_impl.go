@@ -7,14 +7,14 @@ import (
 
 	"monorepo/services/user-service/pkg/shared/repository"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type authUsecaseImpl struct {
 	cache interfaces.Cache
-	
+
 	repoMongo *repository.RepoMongo
 }
 
@@ -22,7 +22,7 @@ type authUsecaseImpl struct {
 func NewAuthUsecase(deps dependency.Dependency) AuthUsecase {
 	return &authUsecaseImpl{
 		cache: deps.GetRedisPool().Cache(),
-		
+
 		repoMongo: repository.GetSharedRepoMongo(),
 	}
 }
@@ -32,7 +32,6 @@ func (uc *authUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	
 	msg, _ = uc.repoMongo.AuthRepo.FindHello(ctx)
 	return
-}	
+}

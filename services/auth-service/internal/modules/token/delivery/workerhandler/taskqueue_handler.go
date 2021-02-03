@@ -8,10 +8,10 @@ import (
 
 	"monorepo/services/auth-service/internal/modules/token/usecase"
 
-	taskqueueworker "pkg.agungdwiprasetyo.com/candi/codebase/app/task_queue_worker"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 // TaskQueueHandler struct
@@ -30,8 +30,8 @@ func NewTaskQueueHandler(uc usecase.TokenUsecase, validator interfaces.Validator
 
 // MountHandlers mount handler group
 func (h *TaskQueueHandler) MountHandlers(group *types.WorkerHandlerGroup) {
-	group.Add("token-task-one", h.taskOne)
-	group.Add("token-task-two", h.taskTwo)
+	group.Add("token-task-one-wkwkwk", h.taskOne)
+	group.Add("token-task-two-wkwkwk", h.taskTwo)
 }
 
 func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {

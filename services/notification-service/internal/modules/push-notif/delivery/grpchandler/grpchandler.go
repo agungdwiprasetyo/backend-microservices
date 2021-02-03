@@ -7,8 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 // GRPCHandler rpc handler

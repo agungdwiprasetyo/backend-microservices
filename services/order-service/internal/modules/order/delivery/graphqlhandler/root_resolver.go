@@ -4,9 +4,9 @@ package graphqlhandler
 
 import (
 	"monorepo/services/order-service/internal/modules/order/usecase"
-	
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 // GraphQLHandler model

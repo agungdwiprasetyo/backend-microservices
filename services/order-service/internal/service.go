@@ -3,10 +3,10 @@
 package orderservice
 
 import (
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/config"
+	"pkg.agungdp.dev/candi/codebase/factory"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/config"
 
 	"monorepo/services/order-service/configs"
 	"monorepo/services/order-service/internal/modules/master"

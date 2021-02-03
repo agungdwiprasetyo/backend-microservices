@@ -5,7 +5,7 @@ package shared
 import (
 	"context"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // DefaultTokenValidator for token validator

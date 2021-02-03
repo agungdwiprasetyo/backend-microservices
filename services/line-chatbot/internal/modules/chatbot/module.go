@@ -9,9 +9,9 @@ import (
 	// "monorepo/services/line-chatbot/internal/modules/chatbot/delivery/workerhandler"
 	"monorepo/services/line-chatbot/pkg/shared/usecase"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 const (

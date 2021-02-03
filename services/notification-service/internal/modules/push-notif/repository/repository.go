@@ -6,7 +6,7 @@ import (
 	"context"
 	"monorepo/services/notification-service/internal/modules/push-notif/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // PushNotifRepository abstract interface

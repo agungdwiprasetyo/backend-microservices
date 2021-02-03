@@ -8,9 +8,9 @@ import (
 	"monorepo/services/line-chatbot/internal/modules/event/domain"
 	"monorepo/services/line-chatbot/pkg/shared/repository"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/candishared"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 type eventUsecaseImpl struct {

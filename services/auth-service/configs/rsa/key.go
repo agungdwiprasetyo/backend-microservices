@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
-	"pkg.agungdwiprasetyo.com/candi/candihelper"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
 const (

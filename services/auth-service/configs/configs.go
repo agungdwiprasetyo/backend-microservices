@@ -10,15 +10,16 @@ import (
 	"monorepo/services/auth-service/pkg/shared/repository"
 	"monorepo/services/auth-service/pkg/shared/usecase"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	// "pkg.agungdwiprasetyo.com/candi/codebase/factory/types"
-	"pkg.agungdwiprasetyo.com/candi/candihelper"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/config"
-	"pkg.agungdwiprasetyo.com/candi/config/broker"
-	"pkg.agungdwiprasetyo.com/candi/config/database"
-	"pkg.agungdwiprasetyo.com/candi/middleware"
-	"pkg.agungdwiprasetyo.com/candi/validator"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
+	// "pkg.agungdp.dev/candi/codebase/factory/types"
+	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/config"
+	"pkg.agungdp.dev/candi/config/broker"
+	"pkg.agungdp.dev/candi/config/database"
+	"pkg.agungdp.dev/candi/middleware"
+	"pkg.agungdp.dev/candi/validator"
 )
 
 // LoadConfigs load selected dependency configuration in this service
@@ -30,7 +31,7 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 
 	baseCfg.LoadFunc(func(ctx context.Context) []interfaces.Closer {
 		brokerDeps := broker.InitBrokers(
-		// types.Kafka,
+			types.Kafka,
 		)
 		redisDeps := database.InitRedis()
 		// sqlDeps := database.InitSQLDatabase()

@@ -9,10 +9,10 @@ import (
 	"monorepo/services/notification-service/internal/modules/push-notif/domain"
 	"monorepo/services/notification-service/pkg/shared/repository"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/logger"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/logger"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type pushnotifUsecaseImpl struct {

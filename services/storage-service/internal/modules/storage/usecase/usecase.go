@@ -6,7 +6,7 @@ import (
 	"context"
 	"monorepo/services/storage-service/internal/modules/storage/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/candishared"
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // StorageUsecase abstraction

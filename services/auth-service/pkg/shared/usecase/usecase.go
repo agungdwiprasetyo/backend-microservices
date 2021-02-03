@@ -3,10 +3,10 @@
 package usecase
 
 import (
-	"sync"
 	tokenusecase "monorepo/services/auth-service/internal/modules/token/usecase"
+	"sync"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 )
 
 type (

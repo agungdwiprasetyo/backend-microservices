@@ -7,7 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type authRepoMongo struct {

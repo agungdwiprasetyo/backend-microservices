@@ -9,8 +9,8 @@ import (
 
 	"monorepo/services/notification-service/internal/modules/push-notif/domain"
 
-	"pkg.agungdwiprasetyo.com/candi/logger"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/logger"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 var mutex sync.Mutex

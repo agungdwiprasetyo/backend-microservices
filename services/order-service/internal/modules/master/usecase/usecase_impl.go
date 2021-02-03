@@ -7,14 +7,14 @@ import (
 
 	"monorepo/services/order-service/pkg/shared/repository"
 
-	"pkg.agungdwiprasetyo.com/candi/codebase/factory/dependency"
-	"pkg.agungdwiprasetyo.com/candi/codebase/interfaces"
-	"pkg.agungdwiprasetyo.com/candi/tracer"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/tracer"
 )
 
 type masterUsecaseImpl struct {
 	cache interfaces.Cache
-	
+
 	repoMongo *repository.RepoMongo
 }
 
@@ -22,7 +22,7 @@ type masterUsecaseImpl struct {
 func NewMasterUsecase(deps dependency.Dependency) MasterUsecase {
 	return &masterUsecaseImpl{
 		cache: deps.GetRedisPool().Cache(),
-		
+
 		repoMongo: repository.GetSharedRepoMongo(),
 	}
 }
@@ -32,7 +32,6 @@ func (uc *masterUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	
 	msg, _ = uc.repoMongo.MasterRepo.FindHello(ctx)
 	return
-}	
+}
