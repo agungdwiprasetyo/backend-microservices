@@ -10,10 +10,10 @@ prepare: check
 	@if [ ! -f services/$(service)/.env ]; then cp services/$(service)/.env.sample services/$(service)/.env; fi;
 
 init:
-	@candi -packageprefix=monorepo/services -withgomod=false -protooutputpkg=monorepo/sdk -output=services/ -scope=1
+	@candi -scope=4
 
 add-module: check
-	@candi -packageprefix=monorepo/services -withgomod=false -protooutputpkg=monorepo/sdk -output=services/ -servicename=$(service) -scope=2
+	@candi -scope=5 -servicename=$(service)
 
 build: check
 	@go build -o services/$(service)/bin services/$(service)/*.go
@@ -42,23 +42,21 @@ mocks:
 test: check
 	@echo "\x1b[32;1m>>> running unit test and calculate coverage for service $(service)\x1b[0m"
 	@if [ -f services/$(service)/coverage.txt ]; then rm services/$(service)/coverage.txt; fi;
-	@go test ./services/$(service)/... -cover -coverprofile=services/$(service)/coverage.txt -covermode=count -coverpkg=$(PACKAGES)
+	@go test -race ./services/$(service)/... -cover -coverprofile=services/$(service)/coverage.txt -covermode=atomic \
+		-coverpkg=$$(go list ./services/$(service)/... | grep -v -e mocks -e codebase | tr '\n' ',')
 	@go tool cover -func=services/$(service)/coverage.txt
 
 sonar: check
 	@echo "\x1b[32;1m>>> running sonar scanner for service $(service)\x1b[0m"
 	@[ "${level}" ] || ( echo "\x1b[31;1mERROR: 'level' is not set\x1b[0m" ; exit 1 )
-	@sonar-scanner -Dsonar.projectKey=$(level)-$(service) \
-	-Dsonar.projectName=$(level)-$(service) \
+	@sonar-scanner -Dsonar.projectKey=$(service)-$(level) \
+	-Dsonar.projectName=$(service)-$(level) \
 	-Dsonar.sources=./services/$(service) \
 	-Dsonar.exclusions=**/mocks/**,**/module.go \
 	-Dsonar.test.inclusions=**/*_test.go \
 	-Dsonar.test.exclusions=**/mocks/** \
 	-Dsonar.coverage.exclusions=**/mocks/**,**/*_test.go,**/main.go \
 	-Dsonar.go.coverage.reportPaths=./services/$(service)/coverage.txt
-
-generate-rsa-key:
-	sh scripts/generate_rsa_key.sh
 
 clear:
 	rm -rf sdk/mocks services/$(service)/mocks services/$(service)/bin bin

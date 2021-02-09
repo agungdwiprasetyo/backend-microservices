@@ -19,9 +19,14 @@ $ make init
 ```
 If include GRPC handler, run `$ make proto service={{service_name}}` after init service for generate rpc files from proto (must install `protoc` compiler min version `libprotoc 3.14.0`)
 
-## Run specific service
+## Run all services
 ```
-$ make run service={{service_name}}
+$ candi -run
+```
+
+## Run specific service or multiple services
+```
+$ candi -run -service {{service_a}},{{service_b}}
 ```
 
 ## Add module(s) in specific service (project)
