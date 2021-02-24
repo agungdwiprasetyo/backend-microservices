@@ -11,7 +11,6 @@ import (
 	"monorepo/services/auth-service/pkg/shared/usecase"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
-	"pkg.agungdp.dev/candi/codebase/factory/types"
 	// "pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
@@ -31,7 +30,7 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 
 	baseCfg.LoadFunc(func(ctx context.Context) []interfaces.Closer {
 		brokerDeps := broker.InitBrokers(
-			types.Kafka,
+		// types.Kafka,
 		)
 		redisDeps := database.InitRedis()
 		// sqlDeps := database.InitSQLDatabase()
