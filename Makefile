@@ -30,8 +30,13 @@ proto: check
 docker: check
 	docker build --build-arg SERVICE_NAME=$(service) -t $(service):latest .
 
-run-container:
+run-container: check
 	docker run --name=$(service) --network="host" -d $(service)
+
+deploy: check
+	@[ "${level}" ] || ( echo "\x1b[31;1mERROR: 'level' is not set\x1b[0m" ; exit 1 )
+	# kubectl create configmap $(level)-$(service)-env --from-file services/$(service)/.env --dry-run=client -o yaml | kubectl apply -f -
+	kubectl apply -f services/$(service)/deployments/k8s/$(level)-$(service).yaml
 
 # mocks all interfaces in sdk for unit test
 mocks:
