@@ -465,5 +465,5 @@ honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.1-2019.2.3 h1:3JgtbtFHMiCmsznwGVTUWbgGov+pVqnlf1dEJTNAXeM=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
-pkg.agungdp.dev/candi v1.5.5 h1:dq7ob0umLyoD8++1nJMafXG/n+tFz+MT70uuSaiKLKE=
-pkg.agungdp.dev/candi v1.5.5/go.mod h1:q9cHBbXdFhSp75XhqGpfsu8mRdqyH0QoYsf7U+Jch2M=
+pkg.agungdp.dev/candi v1.5.6 h1:RTVmdWM0FZlH0t4d6FDOA4yDkcVU+GnBfV7+0CEKnzM=
+pkg.agungdp.dev/candi v1.5.6/go.mod h1:q9cHBbXdFhSp75XhqGpfsu8mRdqyH0QoYsf7U+Jch2M=
