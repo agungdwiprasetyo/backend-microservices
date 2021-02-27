@@ -4,10 +4,13 @@ package usecase
 
 import (
 	"context"
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 )
 
 // MemberUsecase abstraction
 type MemberUsecase interface {
 	// add method
 	Hello(ctx context.Context) string
+	Save(ctx context.Context, data *shareddomain.Member) (err error)
+	GetMemberByID(ctx context.Context, id string) (data shareddomain.Member, err error)
 }

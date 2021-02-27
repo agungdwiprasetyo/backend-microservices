@@ -4,26 +4,114 @@ package repository
 
 import (
 	"context"
+	"time"
 
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
 type memberRepoMongo struct {
 	readDB, writeDB *mongo.Database
+	collection      string
 }
 
 // NewMemberRepoMongo mongo repo constructor
 func NewMemberRepoMongo(readDB, writeDB *mongo.Database) MemberRepository {
 	return &memberRepoMongo{
-		readDB, writeDB,
+		readDB, writeDB, "members",
 	}
 }
 
-func (r *memberRepoMongo) FindHello(ctx context.Context) (string, error) {
-	trace := tracer.StartTrace(ctx, "MemberRepoMongo:FindHello")
+func (r *memberRepoMongo) FetchAll(ctx context.Context, filter candishared.Filter) (data []shareddomain.Member, err error) {
+	trace := tracer.StartTrace(ctx, "MemberRepoMongo:FetchAll")
+	defer trace.Finish()
+	defer func() { trace.SetError(err) }()
+	ctx = trace.Context()
+
+	findOptions := options.Find()
+	if len(filter.OrderBy) > 0 {
+		findOptions.SetSort(filter)
+	}
+
+	findOptions.SetLimit(int64(filter.Limit))
+	findOptions.SetSkip(int64(filter.Offset))
+	cur, err := r.readDB.Collection(r.collection).Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(ctx)
+
+	for cur.Next(ctx) {
+		var app shareddomain.Member
+		err := cur.Decode(&app)
+		if err != nil {
+			return data, err
+		}
+		data = append(data, app)
+	}
+
+	return
+}
+
+func (r *memberRepoMongo) Find(ctx context.Context, data *shareddomain.Member) (err error) {
+	trace := tracer.StartTrace(ctx, "MemberRepoMongo:Find")
+	defer trace.Finish()
+	defer func() { trace.SetError(err) }()
+	ctx = trace.Context()
+
+	bsonWhere := make(bson.M)
+	if data.ID != "" {
+		bsonWhere["_id"] = data.ID
+	}
+	if data.Username != "" {
+		bsonWhere["username"] = data.Username
+	}
+	trace.SetTag("query", bsonWhere)
+
+	return r.readDB.Collection(r.collection).FindOne(ctx, bsonWhere).Decode(data)
+}
+
+func (r *memberRepoMongo) Count(ctx context.Context, filter candishared.Filter) int64 {
+	trace := tracer.StartTrace(ctx, "MemberRepoMongo:Count")
 	defer trace.Finish()
 
-	return "Hello from repo mongo layer", nil
+	count, err := r.readDB.Collection(r.collection).CountDocuments(trace.Context(), bson.M{})
+	trace.SetError(err)
+	return count
+}
+
+func (r *memberRepoMongo) Save(ctx context.Context, data *shareddomain.Member) (err error) {
+	trace := tracer.StartTrace(ctx, "MemberRepoMongo:Count")
+	defer trace.Finish()
+	defer func() { trace.SetError(err) }()
+	ctx = trace.Context()
+	tracer.Log(ctx, "data", data)
+
+	data.ModifiedAt = time.Now()
+	if data.ID == "" {
+		data.ID = primitive.NewObjectID().Hex()
+		data.CreatedAt = time.Now()
+		_, err = r.writeDB.Collection(r.collection).InsertOne(ctx, data)
+	} else {
+		opt := options.UpdateOptions{
+			Upsert: candihelper.ToBoolPtr(true),
+		}
+		_, err = r.writeDB.Collection(r.collection).UpdateOne(ctx,
+			bson.M{
+				"_id": data.ID,
+			},
+			bson.M{
+				"$set": data,
+			}, &opt)
+	}
+
+	return
 }

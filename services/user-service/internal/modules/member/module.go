@@ -4,8 +4,8 @@ package member
 
 import (
 	"monorepo/services/user-service/internal/modules/member/delivery/graphqlhandler"
-	// "monorepo/services/user-service/internal/modules/member/delivery/grpchandler"
-	// "monorepo/services/user-service/internal/modules/member/delivery/resthandler"
+	"monorepo/services/user-service/internal/modules/member/delivery/grpchandler"
+	"monorepo/services/user-service/internal/modules/member/delivery/resthandler"
 	"monorepo/services/user-service/internal/modules/member/delivery/workerhandler"
 	"monorepo/services/user-service/pkg/shared/usecase"
 
@@ -32,8 +32,8 @@ func NewModule(deps dependency.Dependency) *Module {
 	usecaseUOW := usecase.GetSharedUsecase()
 
 	var mod Module
-	// mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
-	// mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
+	mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
+	mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
 	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Member(), deps.GetValidator())
 
 	mod.workerHandlers = map[types.Worker]interfaces.WorkerHandler{

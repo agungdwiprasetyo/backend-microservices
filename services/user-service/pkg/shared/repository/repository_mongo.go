@@ -13,7 +13,7 @@ type RepoMongo struct {
 	readDB, writeDB *mongo.Database
 
 	// register all repository from modules
-	AuthRepo authrepo.AuthRepository
+	AuthRepo   authrepo.AuthRepository
 	MemberRepo memberrepo.MemberRepository
 }
 
@@ -23,7 +23,7 @@ var globalRepoMongo = new(RepoMongo)
 func setSharedRepoMongo(readDB, writeDB *mongo.Database) {
 	globalRepoMongo = &RepoMongo{
 		readDB: readDB, writeDB: writeDB,
-		AuthRepo: authrepo.NewAuthRepoMongo(readDB, writeDB),
+		AuthRepo:   authrepo.NewAuthRepoMongo(readDB, writeDB),
 		MemberRepo: memberrepo.NewMemberRepoMongo(readDB, writeDB),
 	}
 }

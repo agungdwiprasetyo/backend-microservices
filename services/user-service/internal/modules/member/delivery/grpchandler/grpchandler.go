@@ -4,13 +4,14 @@ package grpchandler
 
 import (
 	"context"
+	"time"
 
 	proto "monorepo/sdk/user-service/proto/member"
 	"monorepo/services/user-service/internal/modules/member/usecase"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -35,18 +36,26 @@ func (h *GRPCHandler) Register(server *grpc.Server, mwGroup *types.MiddlewareGro
 	proto.RegisterMemberHandlerServer(server, h)
 
 	// register middleware for method
-	mwGroup.AddProto(proto.File_member_member_proto, "Hello", h.mw.GRPCBearerAuth)
+	mwGroup.AddProto(proto.File_member_member_proto, "Hello", h.mw.GRPCBasicAuth)
 }
 
-// Hello rpc method
-func (h *GRPCHandler) Hello(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	trace := tracer.StartTrace(ctx, "MemberDeliveryGRPC:Hello")
+// GetMember rpc method
+func (h *GRPCHandler) GetMember(ctx context.Context, req *proto.GetMemberRequest) (*proto.GetMemberResponse, error) {
+	trace := tracer.StartTrace(ctx, "MemberDeliveryGRPC:GetMember")
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	tokenClaim := candishared.ParseTokenClaimFromContext(ctx) // must using GRPCBearerAuth in middleware for this handler
+	member, err := h.uc.GetMemberByID(ctx, req.ID)
+	if err != nil {
+		return nil, grpc.Errorf(codes.NotFound, err.Error())
+	}
 
-	return &proto.Response{
-		Message: h.uc.Hello(ctx) + ", with your session (" + tokenClaim.Audience + ")",
+	return &proto.GetMemberResponse{
+		ID:         member.ID,
+		Fullname:   member.Fullname,
+		Username:   member.Username,
+		Password:   member.Password,
+		CreatedAt:  member.CreatedAt.Format(time.RFC3339),
+		ModifiedAt: member.ModifiedAt.Format(time.RFC3339),
 	}, nil
 }

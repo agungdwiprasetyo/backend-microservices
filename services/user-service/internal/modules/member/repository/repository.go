@@ -4,10 +4,15 @@ package repository
 
 import (
 	"context"
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
+
+	"pkg.agungdp.dev/candi/candishared"
 )
 
 // MemberRepository abstract interface
 type MemberRepository interface {
-	// add method
-	FindHello(ctx context.Context) (string, error)
+	FetchAll(ctx context.Context, filter candishared.Filter) ([]shareddomain.Member, error)
+	Find(ctx context.Context, data *shareddomain.Member) (err error)
+	Count(ctx context.Context, filter candishared.Filter) (count int64)
+	Save(ctx context.Context, data *shareddomain.Member) (err error)
 }

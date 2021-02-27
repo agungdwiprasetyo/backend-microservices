@@ -3,13 +3,18 @@ package member;
 option go_package = "monorepo/services/user-service/api/proto/member";
 
 service MemberHandler {
-	rpc Hello(Request) returns (Response);
+	rpc GetMember(GetMemberRequest) returns (GetMemberResponse);
 }
 
-message Request {
-    string Message=1;
+message GetMemberRequest {
+	string ID=1;
 }
 
-message Response {
-	string Message=1;
+message GetMemberResponse {
+	string ID        = 1;
+	string Username  = 2;
+	string Password  = 3;
+	string Fullname  = 4;
+	string CreatedAt  = 5;
+	string ModifiedAt = 6;
 }

@@ -5,6 +5,7 @@ package usecase
 import (
 	"context"
 
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/services/user-service/pkg/shared/repository"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
@@ -32,6 +33,23 @@ func (uc *memberUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	msg, _ = uc.repoMongo.MemberRepo.FindHello(ctx)
+	return
+}
+
+func (uc *memberUsecaseImpl) Save(ctx context.Context, data *shareddomain.Member) (err error) {
+	trace := tracer.StartTrace(ctx, "AppsUsecase:FindAll")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	return uc.repoMongo.MemberRepo.Save(ctx, data)
+}
+
+func (uc *memberUsecaseImpl) GetMemberByID(ctx context.Context, id string) (data shareddomain.Member, err error) {
+	trace := tracer.StartTrace(ctx, "AppsUsecase:GetMemberByID")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	data.ID = id
+	err = uc.repoMongo.MemberRepo.Find(ctx, &data)
 	return
 }
