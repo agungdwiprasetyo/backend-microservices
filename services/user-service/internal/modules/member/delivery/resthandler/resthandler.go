@@ -9,8 +9,10 @@ import (
 
 	"monorepo/services/user-service/internal/modules/member/usecase"
 	shareddomain "monorepo/services/user-service/pkg/shared/domain"
+	"monorepo/serviceshared"
 
 	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
 	"pkg.agungdp.dev/candi/wrapper"
@@ -36,7 +38,25 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
 	member := v1Root.Group("/member")
-	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	member.GET("", h.getAllMember, echo.WrapMiddleware(h.mw.HTTPBearerAuth), serviceshared.CheckPermission("member.getAllMember"))
+	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPBearerAuth), serviceshared.CheckPermission("member.addMember"))
+}
+
+func (h *RestHandler) getAllMember(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "AppsDeliveryREST:getAllMember")
+	defer trace.Finish()
+
+	var filter candishared.Filter
+	if err := candihelper.ParseFromQueryParam(c.Request().URL.Query(), &filter); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	data, meta, err := h.uc.GetAllMember(trace.Context(), filter)
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "ok", data, meta).JSON(c.Response())
 }
 
 func (h *RestHandler) addMember(c echo.Context) error {

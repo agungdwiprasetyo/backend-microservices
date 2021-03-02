@@ -1,0 +1,424 @@
+{
+	"info": {
+		"_postman_id": "62f38031-433c-4499-a650-02c41e571683",
+		"name": "Master-Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Apps",
+			"item": [
+				{
+					"name": "Get All Apps",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"chat\",\n    \"name\": \"Chat\",\n    \"childs\": [\n        {\n            \"code\": \"getAll\",\n            \"name\": \"Get All Chat History\",\n            \"childs\": [\n                {\n                    \"code\": \"getDetail\",\n                    \"name\": \"Get Detail Chat History\"\n                },\n                {\n                    \"code\": \"save\",\n                    \"name\": \"Save Chat History\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/apps",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detail Apps",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"chat\",\n    \"name\": \"Chat\",\n    \"childs\": [\n        {\n            \"code\": \"getAll\",\n            \"name\": \"Get All Chat History\",\n            \"childs\": [\n                {\n                    \"code\": \"getDetail\",\n                    \"name\": \"Get Detail Chat History\"\n                },\n                {\n                    \"code\": \"save\",\n                    \"name\": \"Save Chat History\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/apps/:code",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"apps",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "user-service"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/apps/permission/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"apps",
+								"permission",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6039cbed269d2b4f8a742d65"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me Permission for Apps",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlMaster}}/v1/apps/permission/me?apps_code=user-service",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"apps",
+								"permission",
+								"me"
+							],
+							"query": [
+								{
+									"key": "apps_code",
+									"value": "user-service"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Apps",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"user-service\",\n    \"name\": \"User Service\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/v1/apps",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save App Permission Tree",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"member\",\n    \"name\": \"Member\",\n    \"childs\": [\n        {\n            \"code\": \"getAllMember\",\n            \"name\": \"Get All Member\",\n            \"childs\": [\n                {\n                    \"code\": \"getDetailMember\",\n                    \"name\": \"Get Detail Member\"\n                },\n                {\n                    \"code\": \"addMember\",\n                    \"name\": \"Add Member\"\n                },\n                {\n                    \"code\": \"updateMember\",\n                    \"name\": \"Update Member\"\n                },\n                {\n                    \"code\": \"deleteMember\",\n                    \"name\": \"Delete Member\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/apps/permission/:appId",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"apps",
+								"permission",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "6039cbed269d2b4f8a742d65"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ACL",
+			"item": [
+				{
+					"name": "Get All Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/role",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"appsCode\": \"user-service\",\n    \"code\": \"admin\",\n    \"name\": \"Administrator\",\n    \"permissions\": [\n        \"member.getAllMember\",\n        \"member.updateMember\",\n        \"member.deleteMember\",\n        \"merchant.getAllMerchant\",\n        \"merchant.getDetailMerchant\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/role",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grant User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"603654e24ee5d10ae94ea0c5\",\n    \"roleId\": \"603dd2989d2d2de9d53df116\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/grantuser",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"grantuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check User Permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissionCode\": \"user-service.merchant.getAllMerchant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/checkpermission",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"checkpermission"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

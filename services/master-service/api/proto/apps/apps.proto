@@ -1,0 +1,15 @@
+syntax="proto3";
+package apps;
+option go_package = "monorepo/services/master-service/api/proto/apps";
+
+service AppsHandler {
+	rpc Hello(Request) returns (Response);
+}
+
+message Request {
+    string Message=1;
+}
+
+message Response {
+	string Message=1;
+}

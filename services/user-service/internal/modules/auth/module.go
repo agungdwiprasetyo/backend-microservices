@@ -5,7 +5,7 @@ package auth
 import (
 	"monorepo/services/user-service/internal/modules/auth/delivery/graphqlhandler"
 	// "monorepo/services/user-service/internal/modules/auth/delivery/grpchandler"
-	// "monorepo/services/user-service/internal/modules/auth/delivery/resthandler"
+	"monorepo/services/user-service/internal/modules/auth/delivery/resthandler"
 	"monorepo/services/user-service/internal/modules/auth/delivery/workerhandler"
 	"monorepo/services/user-service/pkg/shared/usecase"
 
@@ -32,7 +32,7 @@ func NewModule(deps dependency.Dependency) *Module {
 	usecaseUOW := usecase.GetSharedUsecase()
 
 	var mod Module
-	// mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Auth(), deps.GetValidator())
+	mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Auth(), deps.GetValidator())
 	// mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Auth(), deps.GetValidator())
 	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Auth(), deps.GetValidator())
 

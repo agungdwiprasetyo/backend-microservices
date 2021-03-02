@@ -95,3 +95,40 @@ func (a *authServiceGRPCImpl) ValidateToken(ctx context.Context, token string) (
 
 	return
 }
+
+func (a *authServiceGRPCImpl) GenerateToken(ctx context.Context, req PayloadGenerateToken) (token string, err error) {
+	trace := tracer.StartTrace(ctx, "AuthServiceSDK:GenerateToken")
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("%v", r)
+		}
+		trace.Finish()
+	}()
+	ctx = trace.Context()
+
+	md := metadata.Pairs("authorization", a.authKey)
+	trace.InjectGRPCMetadata(md)
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	reqData := &proto.UserData{
+		ID: req.UserID, Username: req.Username,
+	}
+
+	trace.SetTag("metadata", md)
+	trace.SetTag("host", a.host)
+	tracer.Log(ctx, "request.data", reqData)
+
+	resp, err := a.client.GenerateToken(ctx, reqData)
+	if err != nil {
+		trace.SetError(err)
+		logger.LogE(err.Error())
+		desc, ok := status.FromError(err)
+		if ok {
+			err = errors.New(desc.Message())
+		}
+		return
+	}
+	tracer.Log(ctx, "response.data", resp)
+
+	token = resp.Data.Token
+	return
+}

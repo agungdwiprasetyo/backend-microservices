@@ -7,8 +7,10 @@ type Environment struct {
 	// more additional environment with struct tag is environment key example:
 	// ExampleHost string `env:"EXAMPLE_HOST"`
 
-	AuthServiceHost string `env:"AUTH_SERVICE_HOST"`
-	AuthServiceKey  string `env:"AUTH_SERVICE_KEY"`
+	AuthServiceHost   string `env:"AUTH_SERVICE_HOST"`
+	AuthServiceKey    string `env:"AUTH_SERVICE_KEY"`
+	MasterServiceHost string `env:"MASTER_SERVICE_HOST"`
+	MasterServiceKey  string `env:"MASTER_SERVICE_KEY"`
 }
 
 var sharedEnv Environment

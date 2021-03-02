@@ -4,7 +4,12 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
+	"monorepo/sdk"
+	authservice "monorepo/sdk/auth-service"
+	"monorepo/services/user-service/internal/modules/auth/domain"
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/services/user-service/pkg/shared/repository"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
@@ -12,18 +17,22 @@ import (
 	"pkg.agungdp.dev/candi/tracer"
 )
 
-type authUsecaseImpl struct {
-	cache interfaces.Cache
+var (
+	errorsMemberNotFound = errors.New("Member not found")
+)
 
+type authUsecaseImpl struct {
+	cache     interfaces.Cache
 	repoMongo *repository.RepoMongo
+	sdk       sdk.SDK
 }
 
 // NewAuthUsecase usecase impl constructor
 func NewAuthUsecase(deps dependency.Dependency) AuthUsecase {
 	return &authUsecaseImpl{
-		cache: deps.GetRedisPool().Cache(),
-
+		cache:     deps.GetRedisPool().Cache(),
 		repoMongo: repository.GetSharedRepoMongo(),
+		sdk:       sdk.GetSDK(),
 	}
 }
 
@@ -33,5 +42,30 @@ func (uc *authUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	ctx = trace.Context()
 
 	msg, _ = uc.repoMongo.AuthRepo.FindHello(ctx)
+	return
+}
+
+func (uc *authUsecaseImpl) Login(ctx context.Context, req *domain.LoginRequest) (resp domain.LoginResponse, err error) {
+	trace := tracer.StartTrace(ctx, "AuthUsecase:Login")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	member := shareddomain.Member{Username: req.Username}
+	if err := uc.repoMongo.MemberRepo.Find(ctx, &member); err != nil {
+		return resp, errorsMemberNotFound
+	}
+	if member.Password != req.Password {
+		return resp, errorsMemberNotFound
+	}
+
+	token, err := uc.sdk.AuthService().GenerateToken(ctx, authservice.PayloadGenerateToken{
+		UserID: member.ID, Username: member.Username,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	resp.Detail = member
+	resp.Token = token
 	return
 }

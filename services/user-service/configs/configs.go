@@ -5,7 +5,9 @@ package configs
 import (
 	"context"
 
+	"monorepo/sdk"
 	authservice "monorepo/sdk/auth-service"
+	masterservice "monorepo/sdk/master-service"
 	"monorepo/services/user-service/pkg/shared"
 	"monorepo/services/user-service/pkg/shared/repository"
 	"monorepo/services/user-service/pkg/shared/usecase"
@@ -37,6 +39,10 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 		mongoDeps := database.InitMongoDB(ctx)
 
 		authService := authservice.NewAuthServiceGRPC(sharedEnv.AuthServiceHost, sharedEnv.AuthServiceKey)
+		sdk.SetGlobalSDK(
+			sdk.SetAuthService(authService),
+			sdk.SetMasterService(masterservice.NewMasterServiceGRPC(sharedEnv.MasterServiceHost, sharedEnv.MasterServiceKey)),
+		)
 
 		// inject all service dependencies
 		// See all option in dependency package

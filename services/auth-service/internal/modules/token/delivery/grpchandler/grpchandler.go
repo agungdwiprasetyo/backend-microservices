@@ -36,7 +36,7 @@ func (h *GRPCHandler) Register(server *grpc.Server, mwGroup *types.MiddlewareGro
 	proto.RegisterTokenHandlerServer(server, h)
 
 	// register middleware for method
-	mwGroup.AddProto(proto.File_token_token_proto, "GenerateToken", h.mw.GRPCBasicAuth)
+	// mwGroup.AddProto(proto.File_token_token_proto, "GenerateToken", h.mw.GRPCBasicAuth)
 	// mwGroup.AddProto(proto.File_token_token_proto, "ValidateToken", h.mw.GRPCBasicAuth)
 }
 

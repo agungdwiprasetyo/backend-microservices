@@ -1,6 +1,8 @@
 package sdk
 
 import (
+	authservice "monorepo/sdk/auth-service"
+	masterservice "monorepo/sdk/master-service"
 	userservice "monorepo/sdk/user-service"
 	"sync"
 )
@@ -15,18 +17,42 @@ func SetUserService(svc userservice.UserService) Option {
 	}
 }
 
+// SetAuthService option func
+func SetAuthService(svc authservice.AuthService) Option {
+	return func(s *sdkInstance) {
+		s.authservice = svc
+	}
+}
+
+// SetMasterService option func
+func SetMasterService(svc masterservice.MasterService) Option {
+	return func(s *sdkInstance) {
+		s.masterservice = svc
+	}
+}
+
 // SDK instance abstraction
 type SDK interface {
 	UserService() userservice.UserService
+	AuthService() authservice.AuthService
+	MasterService() masterservice.MasterService
 }
 
 // sdkInstance instance
 type sdkInstance struct {
-	userservice userservice.UserService
+	userservice   userservice.UserService
+	authservice   authservice.AuthService
+	masterservice masterservice.MasterService
 }
 
 func (s *sdkInstance) UserService() userservice.UserService {
 	return s.userservice
+}
+func (s *sdkInstance) AuthService() authservice.AuthService {
+	return s.authservice
+}
+func (s *sdkInstance) MasterService() masterservice.MasterService {
+	return s.masterservice
 }
 
 var (
@@ -35,9 +61,6 @@ var (
 )
 
 // SetGlobalSDK constructor with each service option.
-/*
-Barracuda, Unicornfish, Plankton, Mackerel, Sturgeon
-*/
 func SetGlobalSDK(opts ...Option) {
 	s := new(sdkInstance)
 

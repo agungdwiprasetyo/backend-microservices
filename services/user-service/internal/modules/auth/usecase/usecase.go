@@ -4,10 +4,12 @@ package usecase
 
 import (
 	"context"
+	"monorepo/services/user-service/internal/modules/auth/domain"
 )
 
 // AuthUsecase abstraction
 type AuthUsecase interface {
 	// add method
 	Hello(ctx context.Context) string
+	Login(ctx context.Context, req *domain.LoginRequest) (resp domain.LoginResponse, err error)
 }

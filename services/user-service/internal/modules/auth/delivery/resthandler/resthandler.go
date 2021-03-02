@@ -7,10 +7,10 @@ import (
 
 	"github.com/labstack/echo"
 
+	"monorepo/services/user-service/internal/modules/auth/domain"
 	"monorepo/services/user-service/internal/modules/auth/usecase"
 
 	"pkg.agungdp.dev/candi/candihelper"
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
 	"pkg.agungdp.dev/candi/wrapper"
@@ -36,15 +36,23 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
 	auth := v1Root.Group("/auth")
-	auth.GET("", h.hello, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	auth.POST("/login", h.login)
 }
 
-func (h *RestHandler) hello(c echo.Context) error {
+func (h *RestHandler) login(c echo.Context) error {
 	trace := tracer.StartTrace(c.Request().Context(), "DeliveryREST:Hello")
 	defer trace.Finish()
 	ctx := trace.Context()
 
-	tokenClaim := c.Get(string(candishared.ContextKeyTokenClaim)).(*candishared.TokenClaim) // must using HTTPBearerAuth in middleware for this handler
+	var payload domain.LoginRequest
+	if err := c.Bind(&payload); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
 
-	return wrapper.NewHTTPResponse(http.StatusOK, h.uc.Hello(ctx)+", with your session ("+tokenClaim.Audience+")").JSON(c.Response())
+	data, err := h.uc.Login(ctx, &payload)
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "ok", data).JSON(c.Response())
 }

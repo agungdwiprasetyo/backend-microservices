@@ -8,6 +8,7 @@ import (
 	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/services/user-service/pkg/shared/repository"
 
+	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -37,7 +38,7 @@ func (uc *memberUsecaseImpl) Hello(ctx context.Context) (msg string) {
 }
 
 func (uc *memberUsecaseImpl) Save(ctx context.Context, data *shareddomain.Member) (err error) {
-	trace := tracer.StartTrace(ctx, "AppsUsecase:FindAll")
+	trace := tracer.StartTrace(ctx, "MemberUsecase:FindAll")
 	defer trace.Finish()
 	ctx = trace.Context()
 
@@ -45,11 +46,27 @@ func (uc *memberUsecaseImpl) Save(ctx context.Context, data *shareddomain.Member
 }
 
 func (uc *memberUsecaseImpl) GetMemberByID(ctx context.Context, id string) (data shareddomain.Member, err error) {
-	trace := tracer.StartTrace(ctx, "AppsUsecase:GetMemberByID")
+	trace := tracer.StartTrace(ctx, "MemberUsecase:GetMemberByID")
 	defer trace.Finish()
 	ctx = trace.Context()
 
 	data.ID = id
 	err = uc.repoMongo.MemberRepo.Find(ctx, &data)
+	return
+}
+
+func (uc *memberUsecaseImpl) GetAllMember(ctx context.Context, filter candishared.Filter) (data []shareddomain.Member, meta candishared.Meta, err error) {
+	trace := tracer.StartTrace(ctx, "MemberUsecase:GetAllMember")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	filter.CalculateOffset()
+	count := uc.repoMongo.MemberRepo.Count(ctx, filter)
+	data, err = uc.repoMongo.MemberRepo.FetchAll(ctx, filter)
+	if err != nil {
+		return data, meta, err
+	}
+
+	meta = candishared.NewMeta(filter.Page, filter.Limit, int(count))
 	return
 }

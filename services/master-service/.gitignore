@@ -1,0 +1,5 @@
+bin
+vendor
+main_service.go
+master-service
+coverage.txt
