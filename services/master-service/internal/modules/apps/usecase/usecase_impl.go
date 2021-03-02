@@ -237,8 +237,3 @@ func (uc *appsUsecaseImpl) GetAllUserPermissions(ctx context.Context, appsCode, 
 
 	return
 }
-
-// func (uc *appsUsecaseImpl) GetAllPermissions(ctx context.Context, filter domain.FilterPermission) (data []shareddomain.Permission, err error) {
-
-// 	return
-// }

@@ -9,6 +9,8 @@ import (
 
 	"monorepo/services/master-service/internal/modules/acl/domain"
 	"monorepo/services/master-service/internal/modules/acl/usecase"
+	"monorepo/services/master-service/pkg/shared/usecase/common"
+	"monorepo/serviceshared"
 
 	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/candishared"
@@ -34,13 +36,15 @@ func NewRestHandler(mw interfaces.Middleware, uc usecase.ACLUsecase, validator i
 // Mount handler with root "/"
 // handling version in here
 func (h *RestHandler) Mount(root *echo.Group) {
+	aclChecker := common.GetCommonUsecase()
 	v1Root := root.Group(candihelper.V1)
 
 	acl := v1Root.Group("/acl", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
-	acl.POST("/role", h.addRole)
-	acl.POST("/grantuser", h.grantUser)
+	acl.POST("/role", h.addRole, serviceshared.CheckPermission(aclChecker, "master-service.acl.addRole"))
+	acl.POST("/grantuser", h.grantUser, serviceshared.CheckPermission(aclChecker, "master-service.acl.grantUser"))
 	acl.POST("/checkpermission", h.checkPermission)
-	acl.GET("/role", h.getAllRole)
+	acl.GET("/role", h.getAllRole, serviceshared.CheckPermission(aclChecker, "master-service.acl.getAllRole"))
+	acl.GET("/role/:id", h.getDetailRole)
 }
 
 func (h *RestHandler) getAllRole(c echo.Context) error {
@@ -107,9 +111,26 @@ func (h *RestHandler) checkPermission(c echo.Context) error {
 	tokenClaim := candishared.ParseTokenClaimFromContext(ctx)
 	payload.UserID = tokenClaim.Additional.(map[string]interface{})["user_id"].(string)
 
-	if err := h.uc.CheckPermission(ctx, payload); err != nil {
+	if err := h.uc.CheckPermission(ctx, payload.UserID, payload.PermissionCode); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
 	return wrapper.NewHTTPResponse(http.StatusOK, "ok").JSON(c.Response())
+}
+
+func (h *RestHandler) getDetailRole(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "AclDeliveryREST:getDetailRole")
+	defer trace.Finish()
+
+	var payload domain.GrantUserRequest
+	if err := c.Bind(&payload); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	data, err := h.uc.GetDetailRole(trace.Context(), c.Param("id"))
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "ok", data).JSON(c.Response())
 }

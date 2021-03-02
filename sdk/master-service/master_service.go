@@ -6,5 +6,5 @@ import (
 
 // MasterService abstract interface
 type MasterService interface {
-	CheckPermission(ctx context.Context, req PayloadCheckPermission) (isAllowed bool, err error)
+	CheckPermission(ctx context.Context, userID string, permissionCode string) (err error)
 }

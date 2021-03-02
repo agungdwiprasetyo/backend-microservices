@@ -45,7 +45,7 @@ func (uc *aclUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	return
 }
 
-func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRequest) (resp domain.AddRoleResponse, err error) {
+func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRequest) (resp domain.RoleResponse, err error) {
 	trace := tracer.StartTrace(ctx, "AclUsecase:SaveRole")
 	defer trace.Finish()
 	ctx = trace.Context()
@@ -87,9 +87,12 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 	err = uc.repoMongo.RoleRepo.Save(ctx, &currentRole)
 
 	resp.ID = currentRole.ID
-	resp.AppsID = currentRole.AppsID
 	resp.Code = currentRole.Code
 	resp.Name = currentRole.Name
+	resp.Apps.ID = apps.ID
+	resp.Apps.Code = apps.Code
+	resp.Apps.Name = apps.Name
+	resp.Permissions = make([]shareddomain.Permission, 1)
 	return
 }
 
@@ -139,13 +142,13 @@ func (uc *aclUsecaseImpl) GetPermission(ctx context.Context, userID, appsID stri
 	return
 }
 
-func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, payload domain.CheckPermissionRequest) (err error) {
+func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (err error) {
 	trace := tracer.StartTrace(ctx, "AclUsecase:CheckPermission")
 	defer trace.Finish()
 	ctx = trace.Context()
-	trace.SetTag("userId", payload.UserID)
+	trace.SetTag("userId", userID)
 
-	acl, err := uc.repoMongo.AclRepo.FindByUserID(ctx, payload.UserID)
+	acl, err := uc.repoMongo.AclRepo.FindByUserID(ctx, userID)
 	if err != nil || len(acl) == 0 {
 		return errors.New("ACL not found for this user")
 	}
@@ -158,7 +161,7 @@ func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, payload domain.Ch
 	roleGroup := uc.repoMongo.RoleRepo.GroupByID(ctx, roles...)
 	hasAccess := false
 	for _, role := range roleGroup {
-		if _, ok := role.Permissions[payload.PermissionCode]; ok {
+		if _, ok := role.Permissions[permissionCode]; ok {
 			hasAccess = true
 			break
 		}
@@ -171,10 +174,62 @@ func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, payload domain.Ch
 	return
 }
 
-func (uc *aclUsecaseImpl) GetAllRole(ctx context.Context, filter domain.RoleListFilter) (data []shareddomain.Role, meta candishared.Meta, err error) {
+func (uc *aclUsecaseImpl) GetAllRole(ctx context.Context, filter domain.RoleListFilter) (data []domain.RoleResponse, meta candishared.Meta, err error) {
 	trace := tracer.StartTrace(ctx, "AclUsecase:GetAllRole")
 	defer trace.Finish()
 	ctx = trace.Context()
 
+	filter.CalculateOffset()
+	count := uc.repoMongo.RoleRepo.Count(ctx, filter)
+
+	roles, err := uc.repoMongo.RoleRepo.FetchAll(ctx, filter)
+	if err != nil {
+		return data, meta, err
+	}
+
+	for _, role := range roles {
+		apps := shareddomain.Apps{ID: role.AppsID}
+		uc.repoMongo.AppsRepo.Find(ctx, &apps)
+		roleDetail := domain.RoleResponse{
+			ID:   role.ID,
+			Code: role.Code,
+			Name: role.Name,
+		}
+		roleDetail.Apps.ID = apps.ID
+		roleDetail.Apps.Code = apps.Code
+		roleDetail.Apps.Name = apps.Name
+		data = append(data, roleDetail)
+	}
+
+	meta = candishared.NewMeta(filter.Page, filter.Limit, int(count))
+	return
+}
+
+func (uc *aclUsecaseImpl) GetDetailRole(ctx context.Context, roleID string) (data domain.RoleResponse, err error) {
+	trace := tracer.StartTrace(ctx, "AclUsecase:GetDetailRole")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	role := shareddomain.Role{ID: roleID}
+	if err = uc.repoMongo.RoleRepo.Find(ctx, &role); err != nil {
+		return data, err
+	}
+
+	permFilter := appsdomain.FilterPermission{
+		Filter: candishared.Filter{ShowAll: true},
+	}
+	for _, perm := range role.Permissions {
+		permFilter.PermissionIDs = append(permFilter.PermissionIDs, perm)
+	}
+
+	permissions, err := uc.repoMongo.PermissionRepo.FetchAll(ctx, permFilter)
+	if err != nil || len(permissions) == 0 {
+		return data, errors.New("Data not found")
+	}
+
+	data.ID = role.ID
+	data.Code = role.Code
+	data.Name = role.Name
+	data.Permissions = shareddomain.MakeTreePermission(permissions)
 	return
 }

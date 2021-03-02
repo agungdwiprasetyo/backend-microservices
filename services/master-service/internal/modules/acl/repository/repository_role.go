@@ -14,7 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"pkg.agungdp.dev/candi/candihelper"
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
@@ -97,11 +96,21 @@ func (r *roleRepoMongo) Find(ctx context.Context, data *shareddomain.Role) (err 
 	return r.readDB.Collection(r.collection).FindOne(ctx, bsonWhere).Decode(data)
 }
 
-func (r *roleRepoMongo) Count(ctx context.Context, filter candishared.Filter) int64 {
+func (r *roleRepoMongo) Count(ctx context.Context, filter domain.RoleListFilter) int64 {
 	trace := tracer.StartTrace(ctx, "RoleRepoMongo:Count")
 	defer trace.Finish()
 
-	count, err := r.readDB.Collection(r.collection).CountDocuments(trace.Context(), bson.M{})
+	where := bson.M{}
+	if filter.AppsID != "" {
+		where["appsId"] = filter.AppsID
+	}
+	if len(filter.RoleIDs) > 0 {
+		where["_id"] = bson.M{
+			"$in": filter.RoleIDs,
+		}
+	}
+
+	count, err := r.readDB.Collection(r.collection).CountDocuments(trace.Context(), where)
 	trace.SetError(err)
 	return count
 }

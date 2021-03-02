@@ -46,3 +46,33 @@ type Permission struct {
 	CreatedAtDB  time.Time    `json:"-" bson:"createdAt"`
 	ModifiedAtDB time.Time    `json:"-" bson:"modifiedAt"`
 }
+
+// MakeTreePermission construct tree permission data  (parent-child)
+func MakeTreePermission(permissions []Permission) (results []Permission) {
+	permParentGroups := make(map[string][]Permission)
+	for _, perm := range permissions {
+		permParentGroups[perm.ParentID] = append(permParentGroups[perm.ParentID], perm)
+		if perm.ParentID == "" {
+			results = append(results, perm)
+		}
+	}
+
+	var findAllChild func(parentID string) []Permission
+	findAllChild = func(parentID string) (childs []Permission) {
+		childs = permParentGroups[parentID]
+		for i, c := range childs {
+			c.AppsID = ""
+			c.Childs = append(c.Childs, findAllChild(c.ID)...)
+			childs[i] = c
+		}
+		return childs
+	}
+
+	for i, perm := range results {
+		perm.AppsID = ""
+		perm.Childs = append(perm.Childs, findAllChild(perm.ID)...)
+		results[i] = perm
+	}
+
+	return
+}

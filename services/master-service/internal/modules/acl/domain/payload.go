@@ -43,3 +43,16 @@ type CheckPermissionResponse struct {
 	RoleID string                    `json:"userId"`
 	Access []shareddomain.Permission `json:"access"`
 }
+
+// RoleResponse response payload
+type RoleResponse struct {
+	ID   string `json:"id"`
+	Code string `json:"code"`
+	Name string `json:"name"`
+	Apps struct {
+		ID   string `json:"id"`
+		Code string `json:"code"`
+		Name string `json:"name"`
+	} `json:"apps"`
+	Permissions []shareddomain.Permission `json:"permissions,omitempty"`
+}

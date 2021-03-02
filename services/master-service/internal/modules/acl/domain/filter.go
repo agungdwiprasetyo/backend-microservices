@@ -5,8 +5,8 @@ import "pkg.agungdp.dev/candi/candishared"
 // RoleListFilter filter
 type RoleListFilter struct {
 	candishared.Filter
-	AppsID  string
-	RoleIDs []string
+	AppsID  string   `json:"apps_id"`
+	RoleIDs []string `json:"role_ids"`
 }
 
 // ACLFilter filter

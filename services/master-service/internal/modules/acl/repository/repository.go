@@ -6,8 +6,6 @@ import (
 	"context"
 	"monorepo/services/master-service/internal/modules/acl/domain"
 	shareddomain "monorepo/services/master-service/pkg/shared/domain"
-
-	"pkg.agungdp.dev/candi/candishared"
 )
 
 // AclRepository abstract interface
@@ -22,7 +20,7 @@ type AclRepository interface {
 type RoleRepository interface {
 	FetchAll(ctx context.Context, filter domain.RoleListFilter) (data []shareddomain.Role, err error)
 	GroupByID(ctx context.Context, roleID ...string) map[string]shareddomain.Role
-	Count(ctx context.Context, filter candishared.Filter) int64
+	Count(ctx context.Context, filter domain.RoleListFilter) int64
 	Find(ctx context.Context, data *shareddomain.Role) (err error)
 	Save(ctx context.Context, data *shareddomain.Role) (err error)
 }

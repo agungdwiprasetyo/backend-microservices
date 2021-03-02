@@ -5,7 +5,6 @@ package usecase
 import (
 	"context"
 	"monorepo/services/master-service/internal/modules/acl/domain"
-	shareddomain "monorepo/services/master-service/pkg/shared/domain"
 
 	"pkg.agungdp.dev/candi/candishared"
 )
@@ -14,8 +13,9 @@ import (
 type ACLUsecase interface {
 	// add method
 	Hello(ctx context.Context) string
-	SaveRole(ctx context.Context, payload domain.AddRoleRequest) (resp domain.AddRoleResponse, err error)
+	SaveRole(ctx context.Context, payload domain.AddRoleRequest) (resp domain.RoleResponse, err error)
 	GrantUser(ctx context.Context, payload domain.GrantUserRequest) (err error)
-	CheckPermission(ctx context.Context, payload domain.CheckPermissionRequest) (err error)
-	GetAllRole(ctx context.Context, filter domain.RoleListFilter) ([]shareddomain.Role, candishared.Meta, error)
+	CheckPermission(ctx context.Context, userID string, permissionCode string) (err error)
+	GetAllRole(ctx context.Context, filter domain.RoleListFilter) ([]domain.RoleResponse, candishared.Meta, error)
+	GetDetailRole(ctx context.Context, roleID string) (data domain.RoleResponse, err error)
 }

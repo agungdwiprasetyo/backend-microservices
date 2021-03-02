@@ -6,7 +6,6 @@ import (
 	"context"
 
 	proto "monorepo/sdk/master-service/proto/acl"
-	"monorepo/services/master-service/internal/modules/acl/domain"
 	"monorepo/services/master-service/internal/modules/acl/usecase"
 
 	"google.golang.org/grpc"
@@ -45,10 +44,7 @@ func (h *GRPCHandler) CheckPermission(ctx context.Context, req *proto.CheckPermi
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	err := h.uc.CheckPermission(ctx, domain.CheckPermissionRequest{
-		UserID:         req.UserID,
-		PermissionCode: req.PermissionCode,
-	})
+	err := h.uc.CheckPermission(ctx, req.UserID, req.PermissionCode)
 	if err != nil {
 		return nil, grpc.Errorf(codes.PermissionDenied, err.Error())
 	}

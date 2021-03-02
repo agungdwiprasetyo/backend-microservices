@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo"
 
+	"monorepo/sdk"
 	"monorepo/services/user-service/internal/modules/member/usecase"
 	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/serviceshared"
@@ -35,11 +36,12 @@ func NewRestHandler(mw interfaces.Middleware, uc usecase.MemberUsecase, validato
 // Mount handler with root "/"
 // handling version in here
 func (h *RestHandler) Mount(root *echo.Group) {
+	aclChecker := sdk.GetSDK().MasterService()
 	v1Root := root.Group(candihelper.V1)
 
-	member := v1Root.Group("/member")
-	member.GET("", h.getAllMember, echo.WrapMiddleware(h.mw.HTTPBearerAuth), serviceshared.CheckPermission("member.getAllMember"))
-	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPBearerAuth), serviceshared.CheckPermission("member.addMember"))
+	member := v1Root.Group("/member", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	member.GET("", h.getAllMember, serviceshared.CheckPermission(aclChecker, "user-service.member.getAllMember"))
+	member.POST("", h.addMember, serviceshared.CheckPermission(aclChecker, "user-service.member.addMember"))
 }
 
 func (h *RestHandler) getAllMember(c echo.Context) error {

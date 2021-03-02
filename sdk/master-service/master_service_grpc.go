@@ -44,7 +44,7 @@ func NewMasterServiceGRPC(host string, authKey string) MasterService {
 	}
 }
 
-func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, req PayloadCheckPermission) (isAllowed bool, err error) {
+func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (err error) {
 	trace := tracer.StartTrace(ctx, "MasterServiceSDK:CheckPermission")
 	defer func() {
 		if r := recover(); r != nil {
@@ -58,7 +58,7 @@ func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, req Payload
 	trace.InjectGRPCMetadata(md)
 	ctx = metadata.NewOutgoingContext(ctx, md)
 	reqData := &proto.CheckPermissionRequest{
-		UserID: req.UserID, PermissionCode: req.PermissionCode,
+		UserID: userID, PermissionCode: permissionCode,
 	}
 
 	trace.SetTag("metadata", md)
@@ -77,5 +77,9 @@ func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, req Payload
 	}
 	tracer.Log(ctx, "response.data", resp)
 
-	return resp.IsAllowed, nil
+	if !resp.IsAllowed {
+		return errors.New("Not allowed")
+	}
+
+	return nil
 }
