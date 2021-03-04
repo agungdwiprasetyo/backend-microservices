@@ -47,7 +47,7 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 		// inject all service dependencies
 		// See all option in dependency package
 		deps = dependency.InitDependency(
-			dependency.SetMiddleware(middleware.NewMiddleware(authService)),
+			dependency.SetMiddleware(middleware.NewMiddleware(authService, nil)),
 			dependency.SetValidator(validator.NewValidator()),
 			dependency.SetBroker(brokerDeps),
 			dependency.SetRedisPool(redisDeps),
