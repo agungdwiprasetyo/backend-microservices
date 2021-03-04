@@ -11,8 +11,8 @@ import (
 
 // TokenUsecase abstraction
 type TokenUsecase interface {
-	Generate(ctx context.Context, payload *domain.Claim) <-chan candishared.Result
+	Generate(ctx context.Context, payload *domain.Claim) (tokenString string, err error)
 	Refresh(ctx context.Context, token string) <-chan candishared.Result
-	Validate(ctx context.Context, token string) <-chan candishared.Result
+	Validate(ctx context.Context, tokenString string) (claim *domain.Claim, err error)
 	Revoke(ctx context.Context, token string) <-chan candishared.Result
 }

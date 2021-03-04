@@ -50,12 +50,10 @@ func (h *GRPCHandler) GenerateToken(ctx context.Context, req *proto.UserData) (*
 	tokenClaim.User.ID = req.ID
 	tokenClaim.User.Username = req.Username
 
-	result := <-h.uc.Generate(ctx, &tokenClaim)
-	if result.Error != nil {
-		return nil, grpc.Errorf(codes.Internal, "%v", result.Error)
+	tokenString, err := h.uc.Generate(ctx, &tokenClaim)
+	if err != nil {
+		return nil, grpc.Errorf(codes.Internal, err.Error())
 	}
-
-	tokenString := result.Data.(string)
 
 	return &proto.ResponseGenerate{
 		Success: true,
@@ -71,12 +69,10 @@ func (h *GRPCHandler) ValidateToken(ctx context.Context, req *proto.PayloadValid
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	result := <-h.uc.Validate(ctx, req.Token)
-	if result.Error != nil {
-		return nil, result.Error
+	claim, err := h.uc.Validate(ctx, req.Token)
+	if err != nil {
+		return nil, err
 	}
-
-	claim := result.Data.(*domain.Claim)
 
 	return &proto.ResponseValidation{
 		Success: true,

@@ -12,9 +12,7 @@ import (
 	"monorepo/services/auth-service/pkg/shared/repository"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/candishared"
-	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -51,45 +49,37 @@ func NewTokenUsecase(deps dependency.Dependency) TokenUsecase {
 }
 
 // Generate token
-func (uc *tokenUsecaseImpl) Generate(ctx context.Context, payload *domain.Claim) <-chan candishared.Result {
-	output := make(chan candishared.Result)
+func (uc *tokenUsecaseImpl) Generate(ctx context.Context, payload *domain.Claim) (tokenString string, err error) {
+	trace := tracer.StartTrace(ctx, "TokenUsecase:Generate")
+	defer trace.Finish()
+	ctx = trace.Context()
 
-	go func() {
-		defer close(output)
+	now := time.Now()
+	exp := now.Add(60 * time.Hour)
 
-		now := time.Now()
-		exp := now.Add(60 * time.Hour)
+	var key interface{}
+	var token = new(jwt.Token)
+	if payload.Alg == domain.HS256 {
+		token = jwt.New(jwt.SigningMethodHS256)
+		key = []byte(TokenKey)
+	} else {
+		token = jwt.New(jwt.SigningMethodRS256)
+		key = uc.privateKey
+	}
+	claims := jwt.MapClaims{
+		"iss":  "agungdwiprasetyo.com",
+		"exp":  exp.Unix(),
+		"iat":  now.Unix(),
+		"did":  payload.DeviceID,
+		"aud":  payload.Audience,
+		"jti":  payload.Id,
+		"sub":  payload.User.ID,
+		"user": payload.User,
+	}
+	token.Claims = claims
 
-		var key interface{}
-		var token = new(jwt.Token)
-		if payload.Alg == domain.HS256 {
-			token = jwt.New(jwt.SigningMethodHS256)
-			key = []byte(TokenKey)
-		} else {
-			token = jwt.New(jwt.SigningMethodRS256)
-			key = uc.privateKey
-		}
-		claims := jwt.MapClaims{
-			"iss":  "agungdwiprasetyo.com",
-			"exp":  exp.Unix(),
-			"iat":  now.Unix(),
-			"did":  payload.DeviceID,
-			"aud":  payload.Audience,
-			"jti":  payload.Id,
-			"user": payload.User,
-		}
-		token.Claims = claims
-
-		tokenString, err := token.SignedString(key)
-		if err != nil {
-			output <- candishared.Result{Error: err}
-			return
-		}
-
-		output <- candishared.Result{Data: tokenString}
-	}()
-
-	return output
+	tokenString, err = token.SignedString(key)
+	return
 }
 
 // Refresh token
@@ -104,58 +94,38 @@ func (uc *tokenUsecaseImpl) Refresh(ctx context.Context, token string) <-chan ca
 }
 
 // Validate token
-func (uc *tokenUsecaseImpl) Validate(ctx context.Context, tokenString string) <-chan candishared.Result {
-	output := make(chan candishared.Result)
+func (uc *tokenUsecaseImpl) Validate(ctx context.Context, tokenString string) (claim *domain.Claim, err error) {
+	trace := tracer.StartTrace(ctx, "TokenUsecase:Validate")
+	defer trace.Finish()
+	ctx = trace.Context()
 
-	go tracer.WithTraceFunc(ctx, "TokenUsecase:Validate", func(ctx context.Context, tags map[string]interface{}) {
-		defer close(output)
-
-		tokenParse, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			checkAlg, _ := candishared.GetValueFromContext(ctx, candishared.ContextKey("tokenAlg")).(string)
-			if checkAlg == domain.HS256 {
-				return []byte(TokenKey), nil
-			}
-			return uc.publicKey, nil
-		})
-
-		taskqueueworker.AddJob("token-task-two", 10, candihelper.ToBytes(tokenString))
-
-		var errToken error
-		switch ve := err.(type) {
-		case *jwt.ValidationError:
-			if ve.Errors == jwt.ValidationErrorExpired {
-				errToken = ErrTokenExpired
-			} else {
-				errToken = ErrTokenFormat
-			}
+	tokenParse, err := jwt.ParseWithClaims(tokenString, &domain.Claim{}, func(token *jwt.Token) (interface{}, error) {
+		checkAlg, _ := candishared.GetValueFromContext(ctx, candishared.ContextKey("tokenAlg")).(string)
+		if checkAlg == domain.HS256 {
+			return []byte(TokenKey), nil
 		}
-
-		if errToken != nil {
-			output <- candishared.Result{Error: errToken}
-			return
-		}
-
-		if !tokenParse.Valid {
-			output <- candishared.Result{Error: ErrTokenFormat}
-			return
-		}
-
-		mapClaims, _ := tokenParse.Claims.(jwt.MapClaims)
-
-		var tokenClaim domain.Claim
-		tokenClaim.DeviceID, _ = mapClaims["did"].(string)
-		tokenClaim.Audience, _ = mapClaims["aud"].(string)
-		tokenClaim.Id, _ = mapClaims["jti"].(string)
-		exp, _ := mapClaims["exp"].(float64)
-		tokenClaim.ExpiresAt = int64(exp)
-		userData, _ := mapClaims["user"].(map[string]interface{})
-		tokenClaim.User.ID, _ = userData["id"].(string)
-		tokenClaim.User.Username, _ = userData["username"].(string)
-
-		output <- candishared.Result{Data: &tokenClaim}
+		return uc.publicKey, nil
 	})
 
-	return output
+	switch ve := err.(type) {
+	case *jwt.ValidationError:
+		if ve.Errors == jwt.ValidationErrorExpired {
+			err = ErrTokenExpired
+		} else {
+			err = ErrTokenFormat
+		}
+	}
+
+	if err != nil {
+		return
+	}
+
+	if !tokenParse.Valid {
+		return claim, ErrTokenFormat
+	}
+
+	claim, _ = tokenParse.Claims.(*domain.Claim)
+	return
 }
 
 // Revoke token
