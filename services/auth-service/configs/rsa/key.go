@@ -2,24 +2,18 @@ package rsa
 
 import (
 	"crypto/rsa"
-	"io/ioutil"
-	"os"
+	_ "embed"
 
 	"github.com/dgrijalva/jwt-go"
-	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 )
 
-const (
-	privateKeyPath = "configs/rsa/private.key"
-	publicKeyPath  = "configs/rsa/public.pem"
-)
-
 var (
-	// VerifyKey rsa from config
-	VerifyKey *rsa.PublicKey
+	//go:embed public.pem
+	verifyBytes []byte
 
-	signKey *rsa.PrivateKey
+	//go:embed private.key
+	signBytes []byte
 )
 
 type rsaKey struct {
@@ -27,45 +21,18 @@ type rsaKey struct {
 	privateKey *rsa.PrivateKey
 }
 
-// InitPublicKey return *rsa.PublicKey
-func InitPublicKey(publicKeyPath string) (*rsa.PublicKey, error) {
-	verifyBytes, err := ioutil.ReadFile(os.Getenv(candihelper.WORKDIR) + publicKeyPath)
-	if err != nil {
-		return nil, err
-	}
-
-	VerifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
-	if err != nil {
-		return nil, err
-	}
-	return VerifyKey, nil
-}
-
-// InitPrivateKey return *rsa.PrivateKey
-func InitPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
-	signBytes, err := ioutil.ReadFile(os.Getenv(candihelper.WORKDIR) + privateKeyPath)
-	if err != nil {
-		return nil, err
-	}
-
-	signKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
-	if err != nil {
-		return nil, err
-	}
-	return signKey, nil
-}
-
 // InitKey rsa
 func InitKey() interfaces.RSAKey {
-	publicKey, err := InitPublicKey(publicKeyPath)
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
 	if err != nil {
 		panic("missing rsa public key file, make sure you are running `generate_rsa_key` script and put the file in configs/rsa directory")
 	}
-	privateKey, err := InitPrivateKey(privateKeyPath)
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(signBytes)
 	if err != nil {
 		panic("missing rsa private key file, make sure you are running `generate_rsa_key` script and put the file in configs/rsa directory")
 	}
 
+	verifyBytes, signBytes = nil, nil
 	return &rsaKey{
 		publicKey:  publicKey,
 		privateKey: privateKey,

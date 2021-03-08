@@ -19,9 +19,6 @@ jobs:
     - name: Setup environment
       run: echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
 
-    - name: Prepare
-      run: make prepare service=${{ env.SERVICE_NAME }}
-
     - name: Unit Test
       run: make test service=${{ env.SERVICE_NAME }}
 
@@ -30,6 +27,17 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+    - name: Setup GCP
+      uses: google-github-actions/github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GCS_SA_KEY }}
+        project_id: ${{ secrets.GCS_PROJECT }}
+        export_default_credentials: true
+
+    - name: Sync service environment
+      run: |
+        gsutil -m rsync -R gs://${{ secrets.GCS_SERVICE_ENV }}/${{ env.SERVICE_NAME }} services/${{ env.SERVICE_NAME }}
 
     - name: Set up Docker Buildx
       id: buildx
