@@ -86,12 +86,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8008/v1/member",
-					"protocol": "http",
+					"raw": "{{urlUser}}/v1/member",
 					"host": [
-						"localhost"
+						"{{urlUser}}"
 					],
-					"port": "8008",
 					"path": [
 						"v1",
 						"member"
