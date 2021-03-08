@@ -19,9 +19,6 @@ jobs:
     - name: Setup environment
       run: echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
 
-    - name: Unit Test
-      run: make test service=${{ env.SERVICE_NAME }}
-
     - name: Setup Docker Hub
       uses: docker/login-action@v1
       with:
@@ -38,6 +35,9 @@ jobs:
     - name: Sync service environment
       run: |
         gsutil -m rsync -R gs://${{ secrets.GCS_SERVICE_ENV }}/${{ env.SERVICE_NAME }} services/${{ env.SERVICE_NAME }}
+
+    - name: Unit Test
+      run: make test service=${{ env.SERVICE_NAME }}
 
     - name: Set up Docker Buildx
       id: buildx
