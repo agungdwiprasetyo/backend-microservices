@@ -61,6 +61,6 @@ jobs:
         build-args: |
           SERVICE_NAME=${{ env.SERVICE_NAME }}
         push: true
-        tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.SERVICE_NAME }}:latest
+        tags: gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
