@@ -19,12 +19,6 @@ jobs:
     - name: Setup environment
       run: echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
 
-    - name: Setup Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
     - name: Setup GCP
       uses: google-github-actions/github-actions/setup-gcloud@master
       with:
@@ -42,6 +36,10 @@ jobs:
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v1
+
+    # Configure docker to use the gcloud command-line tool as a credential helper
+    - run: |
+        gcloud auth configure-docker -q
 
     - name: Cache Docker layers
       uses: actions/cache@v2
