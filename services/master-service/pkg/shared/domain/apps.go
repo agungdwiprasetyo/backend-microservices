@@ -10,12 +10,13 @@ type Apps struct {
 	Code         string       `json:"code" bson:"code"`
 	Name         string       `json:"name" bson:"name"`
 	Icon         string       `json:"icon" bson:"icon"`
-	URL          string       `json:"url" bson:"url"`
+	FrontendURL  string       `json:"frontendUrl" bson:"frontendUrl"`
+	BackendURL   string       `json:"backendUrl" bson:"backendUrl"`
 	CreatedAt    string       `json:"-" bson:"-"`
 	ModifiedAt   string       `json:"-" bson:"-"`
 	CreatedAtDB  time.Time    `json:"-" bson:"createdAt"`
 	ModifiedAtDB time.Time    `json:"-" bson:"modifiedAt"`
-	Permissions  []Permission `json:"permission" bson:"-"`
+	Permissions  []Permission `json:"permission,omitempty" bson:"-"`
 }
 
 // Module model

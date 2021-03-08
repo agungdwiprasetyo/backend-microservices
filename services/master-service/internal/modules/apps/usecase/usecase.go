@@ -12,10 +12,11 @@ import (
 
 // AppsUsecase abstraction
 type AppsUsecase interface {
-	FindAll(ctx context.Context, filter *candishared.Filter) (data []shareddomain.Apps, meta candishared.Meta, err error)
+	FindAll(ctx context.Context, filter domain.FilterApps) (data []shareddomain.Apps, meta candishared.Meta, err error)
 	GetDetailApp(ctx context.Context, appID string) (data domain.AppDetail, err error)
 	Save(ctx context.Context, data *shareddomain.Apps) (err error)
 	SaveAppsPermission(ctx context.Context, appID string, permissions domain.PermissionRequest) (err error)
 	GetAllPermissions(ctx context.Context, filter domain.FilterPermission) (data []domain.Permission, meta candishared.Meta, err error)
 	GetAllUserPermissions(ctx context.Context, appsID, userID string) (data []shareddomain.Permission, err error)
+	GetUserApps(ctx context.Context, userID string) (data []domain.UserApps, err error)
 }

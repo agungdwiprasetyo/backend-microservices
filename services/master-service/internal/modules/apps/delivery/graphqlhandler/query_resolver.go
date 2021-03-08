@@ -22,7 +22,7 @@ func (q *queryResolver) GetAll(ctx context.Context, input struct{ Filter *Common
 		input.Filter = new(CommonFilter)
 	}
 	filter := input.Filter.ToSharedFilter()
-	data, meta, err := q.root.uc.FindAll(ctx, &filter)
+	data, meta, err := q.root.uc.FindAll(ctx, filter)
 	if err != nil {
 		return results, err
 	}

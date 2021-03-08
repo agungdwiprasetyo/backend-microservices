@@ -1,7 +1,8 @@
 package graphqlhandler
 
 import (
-	"monorepo/services/master-service/pkg/shared/domain"
+	"monorepo/services/master-service/internal/modules/apps/domain"
+	shareddomain "monorepo/services/master-service/pkg/shared/domain"
 
 	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/candishared"
@@ -18,7 +19,7 @@ type CommonFilter struct {
 }
 
 // ToSharedFilter method
-func (f *CommonFilter) ToSharedFilter() (filter candishared.Filter) {
+func (f *CommonFilter) ToSharedFilter() (filter domain.FilterApps) {
 	filter.Search = candihelper.PtrToString(f.Search)
 	filter.OrderBy = candihelper.PtrToString(f.OrderBy)
 	filter.Sort = candihelper.PtrToString(f.Sort)
@@ -41,5 +42,5 @@ func (f *CommonFilter) ToSharedFilter() (filter candishared.Filter) {
 // AppListResolver resolver
 type AppListResolver struct {
 	Meta candishared.Meta
-	Data []domain.Apps
+	Data []shareddomain.Apps
 }

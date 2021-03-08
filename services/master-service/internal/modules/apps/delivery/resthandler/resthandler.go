@@ -44,18 +44,19 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	apps.POST("/permission/:id", h.saveAppPermission)
 	apps.GET("/permission", h.getAllPermissions)
 	apps.GET("/permission/me", h.getAllMePermissions, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	apps.GET("/me", h.getAllMeApps, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 }
 
 func (h *RestHandler) getAllApps(c echo.Context) error {
 	trace := tracer.StartTrace(c.Request().Context(), "AppsDeliveryREST:getAllApps")
 	defer trace.Finish()
 
-	var filter candishared.Filter
+	var filter domain.FilterApps
 	if err := candihelper.ParseFromQueryParam(c.Request().URL.Query(), &filter); err != nil {
 		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
 	}
 
-	data, meta, err := h.uc.FindAll(trace.Context(), &filter)
+	data, meta, err := h.uc.FindAll(trace.Context(), filter)
 	if err != nil {
 		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
 	}
@@ -142,6 +143,28 @@ func (h *RestHandler) getAllMePermissions(c echo.Context) error {
 	userID := tokenClaim.Additional.(map[string]interface{})["user_id"].(string)
 
 	data, err := h.uc.GetAllUserPermissions(ctx, c.QueryParam("apps_code"), userID)
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "success", data).JSON(c.Response())
+}
+
+func (h *RestHandler) getAllMeApps(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "AppsDeliveryREST:getAllMeApps")
+	defer trace.Finish()
+	ctx := trace.Context()
+
+	var filter domain.FilterPermission
+	if err := candihelper.ParseFromQueryParam(c.Request().URL.Query(), &filter); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+	trace.SetTag("filter", filter)
+
+	tokenClaim := candishared.ParseTokenClaimFromContext(ctx)
+	userID := tokenClaim.Additional.(map[string]interface{})["user_id"].(string)
+
+	data, err := h.uc.GetUserApps(ctx, userID)
 	if err != nil {
 		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
 	}

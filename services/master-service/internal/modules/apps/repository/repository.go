@@ -12,9 +12,9 @@ import (
 
 // AppsRepository abstract interface
 type AppsRepository interface {
-	FetchAll(ctx context.Context, filter candishared.Filter) ([]shareddomain.Apps, error)
+	FetchAll(ctx context.Context, filter domain.FilterApps) ([]shareddomain.Apps, error)
 	Find(ctx context.Context, data *shareddomain.Apps) (err error)
-	Count(ctx context.Context, filter candishared.Filter) (count int64)
+	Count(ctx context.Context, filter domain.FilterApps) (count int64)
 	Save(ctx context.Context, data *shareddomain.Apps) (err error)
 }
 

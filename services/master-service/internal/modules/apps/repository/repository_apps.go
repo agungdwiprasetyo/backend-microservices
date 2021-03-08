@@ -5,6 +5,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"monorepo/services/master-service/internal/modules/apps/domain"
 	shareddomain "monorepo/services/master-service/pkg/shared/domain"
 	"time"
 
@@ -14,7 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"pkg.agungdp.dev/candi/candihelper"
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
@@ -30,11 +30,18 @@ func NewAppsRepoMongo(readDB, writeDB *mongo.Database) AppsRepository {
 	}
 }
 
-func (r *appsRepoMongo) FetchAll(ctx context.Context, filter candishared.Filter) (data []shareddomain.Apps, err error) {
+func (r *appsRepoMongo) FetchAll(ctx context.Context, filter domain.FilterApps) (data []shareddomain.Apps, err error) {
 	trace := tracer.StartTrace(ctx, "AppsRepoMongo:FetchAll")
 	defer trace.Finish()
 	defer func() { trace.SetError(err) }()
 	ctx = trace.Context()
+
+	where := bson.M{}
+	if len(filter.IDs) > 0 {
+		where["_id"] = bson.M{
+			"$in": filter.IDs,
+		}
+	}
 
 	findOptions := options.Find()
 	if len(filter.OrderBy) > 0 {
@@ -43,7 +50,7 @@ func (r *appsRepoMongo) FetchAll(ctx context.Context, filter candishared.Filter)
 
 	findOptions.SetLimit(int64(filter.Limit))
 	findOptions.SetSkip(int64(filter.Offset))
-	cur, err := r.readDB.Collection(r.collection).Find(ctx, bson.M{}, findOptions)
+	cur, err := r.readDB.Collection(r.collection).Find(ctx, where, findOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +94,7 @@ func (r *appsRepoMongo) Find(ctx context.Context, data *shareddomain.Apps) (err 
 	return r.readDB.Collection(r.collection).FindOne(ctx, bsonWhere).Decode(data)
 }
 
-func (r *appsRepoMongo) Count(ctx context.Context, filter candishared.Filter) int64 {
+func (r *appsRepoMongo) Count(ctx context.Context, filter domain.FilterApps) int64 {
 	trace := tracer.StartTrace(ctx, "AppsRepoMongo:Count")
 	defer trace.Finish()
 

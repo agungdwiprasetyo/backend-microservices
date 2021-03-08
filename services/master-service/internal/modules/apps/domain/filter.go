@@ -7,6 +7,11 @@ type FilterModule struct {
 	AppsID string
 }
 
+type FilterApps struct {
+	candishared.Filter
+	IDs []string
+}
+
 type FilterPermission struct {
 	candishared.Filter
 	AppID         string `json:"app_id"`

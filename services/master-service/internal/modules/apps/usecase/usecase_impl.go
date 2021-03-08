@@ -33,7 +33,7 @@ func NewAppsUsecase(deps dependency.Dependency) AppsUsecase {
 	}
 }
 
-func (uc *appsUsecaseImpl) FindAll(ctx context.Context, filter *candishared.Filter) (data []shareddomain.Apps, meta candishared.Meta, err error) {
+func (uc *appsUsecaseImpl) FindAll(ctx context.Context, filter domain.FilterApps) (data []shareddomain.Apps, meta candishared.Meta, err error) {
 	trace := tracer.StartTrace(ctx, "AppsUsecase:FindAll")
 	defer trace.Finish()
 	ctx = trace.Context()
@@ -44,10 +44,10 @@ func (uc *appsUsecaseImpl) FindAll(ctx context.Context, filter *candishared.Filt
 	go func() {
 		defer close(count)
 
-		count <- uc.repoMongo.AppsRepo.Count(ctx, *filter)
+		count <- uc.repoMongo.AppsRepo.Count(ctx, filter)
 	}()
 
-	data, err = uc.repoMongo.AppsRepo.FetchAll(ctx, *filter)
+	data, err = uc.repoMongo.AppsRepo.FetchAll(ctx, filter)
 	if err != nil {
 		return data, meta, err
 	}
@@ -233,6 +233,48 @@ func (uc *appsUsecaseImpl) GetAllUserPermissions(ctx context.Context, appsCode, 
 		perm.AppsID = ""
 		perm.Childs = append(perm.Childs, findAllChild(perm.ID)...)
 		data[i] = perm
+	}
+
+	return
+}
+
+func (uc *appsUsecaseImpl) GetUserApps(ctx context.Context, userID string) (data []domain.UserApps, err error) {
+	trace := tracer.StartTrace(ctx, "AppsUsecase:GetUserApps")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	acl, err := uc.repoMongo.AclRepo.FindByUserID(ctx, userID)
+	if err != nil {
+		return data, err
+	}
+
+	var appIDs, roleIDs []string
+	roleAppMap := make(map[string]string)
+	for _, a := range acl {
+		appIDs = append(appIDs, a.AppsID)
+		roleIDs = append(roleIDs, a.RoleID)
+		roleAppMap[a.AppsID] = a.RoleID
+	}
+
+	roleMap := uc.repoMongo.RoleRepo.GroupByID(ctx, roleIDs...)
+
+	apps, _ := uc.repoMongo.AppsRepo.FetchAll(ctx, domain.FilterApps{
+		Filter: candishared.Filter{ShowAll: true}, IDs: appIDs,
+	})
+
+	for _, a := range apps {
+		userApp := domain.UserApps{
+			ID:          a.ID,
+			Code:        a.Code,
+			Name:        a.Name,
+			Icon:        a.Icon,
+			FrontendURL: a.FrontendURL,
+			BackendURL:  a.BackendURL,
+		}
+		userApp.Role.ID = roleMap[roleAppMap[a.ID]].ID
+		userApp.Role.Name = roleMap[roleAppMap[a.ID]].Name
+		userApp.Role.Code = roleMap[roleAppMap[a.ID]].Code
+		data = append(data, userApp)
 	}
 
 	return
