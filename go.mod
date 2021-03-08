@@ -1,6 +1,6 @@
 module monorepo
 
-go 1.15
+go 1.16
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -12,5 +12,5 @@ require (
 	go.mongodb.org/mongo-driver v1.4.6
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.25.0
-	pkg.agungdp.dev/candi v1.5.7
+	pkg.agungdp.dev/candi v1.5.8
 )

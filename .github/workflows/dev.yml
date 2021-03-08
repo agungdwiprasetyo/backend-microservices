@@ -14,7 +14,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15
+        go-version: 1.16
 
     - name: Setup environment
       run: echo "SERVICE_NAME=${GITHUB_REF#refs/tags/dev/}" >> $GITHUB_ENV
