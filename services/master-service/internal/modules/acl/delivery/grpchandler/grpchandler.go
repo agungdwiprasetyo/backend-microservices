@@ -44,12 +44,12 @@ func (h *GRPCHandler) CheckPermission(ctx context.Context, req *proto.CheckPermi
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	err := h.uc.CheckPermission(ctx, req.UserID, req.PermissionCode)
+	role, err := h.uc.CheckPermission(ctx, req.UserID, req.PermissionCode)
 	if err != nil {
 		return nil, grpc.Errorf(codes.PermissionDenied, err.Error())
 	}
 
 	return &proto.CheckPermissionResponse{
-		IsAllowed: err == nil,
+		RoleID: role,
 	}, nil
 }

@@ -9,8 +9,6 @@ import (
 
 	"monorepo/services/master-service/internal/modules/acl/domain"
 	"monorepo/services/master-service/internal/modules/acl/usecase"
-	"monorepo/services/master-service/pkg/shared/usecase/common"
-	"monorepo/serviceshared"
 
 	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/candishared"
@@ -36,15 +34,14 @@ func NewRestHandler(mw interfaces.Middleware, uc usecase.ACLUsecase, validator i
 // Mount handler with root "/"
 // handling version in here
 func (h *RestHandler) Mount(root *echo.Group) {
-	aclChecker := common.GetCommonUsecase()
 	v1Root := root.Group(candihelper.V1)
 
 	acl := v1Root.Group("/acl", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
-	acl.POST("/role", h.addRole, serviceshared.CheckPermission(aclChecker, "master-service.acl.addRole"))
-	acl.POST("/grantuser", h.grantUser, serviceshared.CheckPermission(aclChecker, "master-service.acl.grantUser"))
+	acl.POST("/role", h.addRole)        //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.addRole")))
+	acl.POST("/grantuser", h.grantUser) //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.grantUser")))
 	acl.POST("/checkpermission", h.checkPermission)
-	acl.GET("/role", h.getAllRole, serviceshared.CheckPermission(aclChecker, "master-service.acl.getAllRole"))
-	acl.GET("/role/:id", h.getDetailRole)
+	acl.GET("/role", h.getAllRole)        //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.getAllRole")))
+	acl.GET("/role/:id", h.getDetailRole) //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.getDetailRole")))
 }
 
 func (h *RestHandler) getAllRole(c echo.Context) error {
@@ -111,11 +108,12 @@ func (h *RestHandler) checkPermission(c echo.Context) error {
 	tokenClaim := candishared.ParseTokenClaimFromContext(ctx)
 	payload.UserID = tokenClaim.Additional.(map[string]interface{})["user_id"].(string)
 
-	if err := h.uc.CheckPermission(ctx, payload.UserID, payload.PermissionCode); err != nil {
+	role, err := h.uc.CheckPermission(ctx, payload.UserID, payload.PermissionCode)
+	if err != nil {
 		return wrapper.NewHTTPResponse(http.StatusBadRequest, err.Error()).JSON(c.Response())
 	}
 
-	return wrapper.NewHTTPResponse(http.StatusOK, "ok").JSON(c.Response())
+	return wrapper.NewHTTPResponse(http.StatusOK, "ok", map[string]string{"roleId": role}).JSON(c.Response())
 }
 
 func (h *RestHandler) getDetailRole(c echo.Context) error {

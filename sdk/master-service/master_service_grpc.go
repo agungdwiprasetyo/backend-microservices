@@ -44,7 +44,7 @@ func NewMasterServiceGRPC(host string, authKey string) MasterService {
 	}
 }
 
-func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (err error) {
+func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (role string, err error) {
 	trace := tracer.StartTrace(ctx, "MasterServiceSDK:CheckPermission")
 	defer func() {
 		if r := recover(); r != nil {
@@ -77,9 +77,6 @@ func (a *masterServiceGRPCImpl) CheckPermission(ctx context.Context, userID stri
 	}
 	tracer.Log(ctx, "response.data", resp)
 
-	if !resp.IsAllowed {
-		return errors.New("Not allowed")
-	}
-
-	return nil
+	role = resp.RoleID
+	return
 }

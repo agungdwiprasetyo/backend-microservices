@@ -15,7 +15,7 @@ type ACLUsecase interface {
 	Hello(ctx context.Context) string
 	SaveRole(ctx context.Context, payload domain.AddRoleRequest) (resp domain.RoleResponse, err error)
 	GrantUser(ctx context.Context, payload domain.GrantUserRequest) (err error)
-	CheckPermission(ctx context.Context, userID string, permissionCode string) (err error)
+	CheckPermission(ctx context.Context, userID string, permissionCode string) (role string, err error)
 	GetAllRole(ctx context.Context, filter domain.RoleListFilter) ([]domain.RoleResponse, candishared.Meta, error)
 	GetDetailRole(ctx context.Context, roleID string) (data domain.RoleResponse, err error)
 }

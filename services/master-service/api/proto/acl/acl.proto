@@ -12,5 +12,5 @@ message CheckPermissionRequest {
 }
 
 message CheckPermissionResponse {
-	bool IsAllowed=1;
+	string RoleID=1;
 }

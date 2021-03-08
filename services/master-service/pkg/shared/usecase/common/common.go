@@ -11,7 +11,7 @@ var commonUC Usecase
 type Usecase interface {
 	// method from another usecase
 	GetDetailApp(ctx context.Context, appID string) (data appsdomain.AppDetail, err error)
-	CheckPermission(ctx context.Context, userID string, permissionCode string) (err error)
+	CheckPermission(ctx context.Context, userID string, permissionCode string) (role string, err error)
 }
 
 // SetCommonUsecase constructor

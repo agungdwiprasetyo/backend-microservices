@@ -85,6 +85,7 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 	}
 
 	err = uc.repoMongo.RoleRepo.Save(ctx, &currentRole)
+	detailRole, _ := uc.GetDetailRole(ctx, currentRole.ID)
 
 	resp.ID = currentRole.ID
 	resp.Code = currentRole.Code
@@ -92,7 +93,7 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 	resp.Apps.ID = apps.ID
 	resp.Apps.Code = apps.Code
 	resp.Apps.Name = apps.Name
-	resp.Permissions = make([]shareddomain.Permission, 1)
+	resp.Permissions = detailRole.Permissions
 	return
 }
 
@@ -142,7 +143,7 @@ func (uc *aclUsecaseImpl) GetPermission(ctx context.Context, userID, appsID stri
 	return
 }
 
-func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (err error) {
+func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, permissionCode string) (roleID string, err error) {
 	trace := tracer.StartTrace(ctx, "AclUsecase:CheckPermission")
 	defer trace.Finish()
 	ctx = trace.Context()
@@ -150,7 +151,7 @@ func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, pe
 
 	acl, err := uc.repoMongo.AclRepo.FindByUserID(ctx, userID)
 	if err != nil || len(acl) == 0 {
-		return errors.New("ACL not found for this user")
+		return roleID, errors.New("ACL not found for this user")
 	}
 
 	var roles []string
@@ -163,12 +164,13 @@ func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, pe
 	for _, role := range roleGroup {
 		if _, ok := role.Permissions[permissionCode]; ok {
 			hasAccess = true
+			roleID = role.ID
 			break
 		}
 	}
 
 	if !hasAccess {
-		return errors.New("Access not found")
+		return roleID, errors.New("Access not found")
 	}
 
 	return
@@ -222,14 +224,23 @@ func (uc *aclUsecaseImpl) GetDetailRole(ctx context.Context, roleID string) (dat
 		permFilter.PermissionIDs = append(permFilter.PermissionIDs, perm)
 	}
 
-	permissions, err := uc.repoMongo.PermissionRepo.FetchAll(ctx, permFilter)
-	if err != nil || len(permissions) == 0 {
-		return data, errors.New("Data not found")
+	var permissions []shareddomain.Permission
+	if len(permFilter.PermissionIDs) > 0 {
+		permissions, err = uc.repoMongo.PermissionRepo.FetchAll(ctx, permFilter)
+		if err != nil || len(permissions) == 0 {
+			return data, errors.New("Data not found")
+		}
 	}
+
+	apps := shareddomain.Apps{ID: role.AppsID}
+	uc.repoMongo.AppsRepo.Find(ctx, &apps)
 
 	data.ID = role.ID
 	data.Code = role.Code
 	data.Name = role.Name
+	data.Apps.ID = apps.ID
+	data.Apps.Code = apps.Code
+	data.Apps.Name = apps.Name
 	data.Permissions = shareddomain.MakeTreePermission(permissions)
 	return
 }

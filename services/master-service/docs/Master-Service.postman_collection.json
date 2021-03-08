@@ -192,11 +192,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8000/v1/apps",
+							"raw": "{{urlMaster}}/v1/apps",
 							"host": [
-								"localhost"
+								"{{urlMaster}}"
 							],
-							"port": "8000",
 							"path": [
 								"v1",
 								"apps"
@@ -268,10 +267,10 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{urlMaster}}/v1/acl/role",
+							"raw": "{{urlMaster}}/v1/acl/role?page=1&limit=10",
 							"host": [
 								"{{urlMaster}}"
 							],
@@ -279,6 +278,65 @@
 								"v1",
 								"acl",
 								"role"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "apps_id",
+									"value": "60392a39bb2a2c9ed3a1bd39",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Role Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/role?page=1&limit=10",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"role"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "apps_id",
+									"value": "60392a39bb2a2c9ed3a1bd39",
+									"disabled": true
+								}
 							]
 						}
 					},
