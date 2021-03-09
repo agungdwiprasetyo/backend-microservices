@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"container/list"
 	"time"
 )
 
@@ -46,6 +47,31 @@ type Permission struct {
 	ModifiedAt   string       `json:"-" bson:"-"`
 	CreatedAtDB  time.Time    `json:"-" bson:"createdAt"`
 	ModifiedAtDB time.Time    `json:"-" bson:"modifiedAt"`
+}
+
+// GetAllVisitedPath func using BFS
+func (permissions Permission) GetAllVisitedPath() (nodeVisitedPaths map[string][]Permission) {
+	visited := make(map[string]struct{})
+	nodeVisitedPaths = make(map[string][]Permission)
+	queue := list.New()
+	queue.PushBack(permissions)
+	visited[permissions.Code] = struct{}{}
+
+	for queue.Len() > 0 {
+		qNode := queue.Front()
+		valNode := qNode.Value.(Permission)
+		for _, node := range valNode.Childs {
+			if _, ok := visited[node.Code]; !ok {
+				visited[node.Code] = struct{}{}
+				queue.PushBack(node)
+				nodeVisitedPaths[node.Code] = nodeVisitedPaths[valNode.Code]
+				nodeVisitedPaths[node.Code] = append(nodeVisitedPaths[node.Code], valNode)
+			}
+		}
+		queue.Remove(qNode)
+	}
+
+	return nodeVisitedPaths
 }
 
 // MakeTreePermission construct tree permission data  (parent-child)

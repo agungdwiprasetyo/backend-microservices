@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 
 	"monorepo/sdk"
 	"monorepo/services/master-service/internal/modules/acl/domain"
@@ -62,25 +61,28 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 		currentRole.Name = payload.Name
 	}
 
+	permList, err := uc.repoMongo.PermissionRepo.FetchAll(ctx, appsdomain.FilterPermission{
+		Filter: candishared.Filter{ShowAll: true}, AppID: apps.ID,
+	})
+	rootPermission := shareddomain.Permission{
+		Code: apps.Code, Childs: shareddomain.MakeTreePermission(permList),
+	}
+	allVisitedPath := rootPermission.GetAllVisitedPath()
+
 	currentRole.Permissions = map[string]string{}
 	for _, permCode := range payload.Permissions {
-		spl := strings.Split(permCode, ".")
-		filterPermission := appsdomain.FilterPermission{
-			Filter: candishared.Filter{ShowAll: true}, Codes: []string{spl[0], spl[len(spl)-1]},
-		}
-		permissions, err := uc.repoMongo.PermissionRepo.FetchAll(ctx, filterPermission)
-		if err != nil || len(permissions) != len(filterPermission.Codes) {
+		perm := shareddomain.Permission{Code: permCode}
+		if err := uc.repoMongo.PermissionRepo.Find(ctx, &perm); err != nil {
 			return resp, fmt.Errorf("Permission data '%s' not found", permCode)
 		}
-		for _, perm := range permissions {
-			if perm.AppsID != apps.ID {
-				return resp, fmt.Errorf("Permission code '%s' not match with apps '%s", permCode, apps.Code)
+		currentRole.Permissions[perm.Code] = perm.ID
+
+		fullParentPath := allVisitedPath[perm.Code]
+		for _, path := range fullParentPath {
+			if path.Code == apps.Code {
+				continue
 			}
-			if perm.ParentID != "" {
-				currentRole.Permissions[apps.Code+"."+permCode] = perm.ID
-			} else {
-				currentRole.Permissions[apps.Code+"."+perm.Code] = perm.ID
-			}
+			currentRole.Permissions[path.Code] = path.ID
 		}
 	}
 
