@@ -3,6 +3,7 @@
 package grpchandler
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	proto "monorepo/sdk/storage-service/proto/storage"
@@ -75,33 +76,32 @@ func (h *GRPCHandler) Upload(stream proto.StorageService_UploadServer) (err erro
 		size = int64(s)
 	}
 
-	var buff []byte
+	buff := new(bytes.Buffer)
 	for {
 		res, err := stream.Recv()
-		if err == io.EOF {
-			break
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return err
 		}
-
-		buff = append(buff, res.Content...)
+		buff.Write(res.Content)
 	}
 
-	res := <-h.uc.Upload(ctx,
+	err = h.uc.Upload(ctx,
 		buff,
 		&domain.UploadMetadata{
 			ContentType: contentType,
 			FileSize:    size,
 			Filename:    fileName,
 		})
-	if res.Error != nil {
-		return grpc.Errorf(codes.Internal, "%v", res.Error)
+	if err != nil {
+		return grpc.Errorf(codes.Internal, "%v", err)
 	}
 
-	err = stream.SendAndClose(&proto.UploadStatus{
+	return stream.SendAndClose(&proto.UploadStatus{
 		Message: "Stream file success",
 		Code:    proto.StatusCode_Ok,
 		File:    "url" + "/" + folder + "/" + fileName,
-		Size:    int64(len(buff)),
 	})
-
-	return
 }

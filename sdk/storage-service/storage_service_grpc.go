@@ -83,23 +83,26 @@ func (u *storageGRPCImpl) Upload(ctx context.Context, file io.Reader, header Hea
 	}
 	defer stream.CloseSend()
 
+	i := int64(0)
 	// stream send file with grpc
-	fileSize := header.Size
-	buff := make([]byte, fileSize)
-	file.Read(buff)
-	for i := int64(0); i < fileSize; i += u.streamLimitSize {
-		lastOffset := i + u.streamLimitSize
-		if lastOffset > fileSize {
-			lastOffset = fileSize
+	for {
+		buff := make([]byte, u.streamLimitSize)
+		n, err := file.Read(buff)
+		if err != nil && err != io.EOF {
+			return res, err
 		}
-		err = stream.Send(&proto.Chunk{
-			Content:   buff[i:lastOffset],
-			TotalSize: fileSize,
-			Received:  lastOffset,
-		})
-		if err != nil {
+		if n == 0 {
+			break
+		}
+
+		i += u.streamLimitSize
+		if err = stream.Send(&proto.Chunk{
+			Content:   buff,
+			TotalSize: header.Size,
+			Received:  i,
+		}); err != nil {
 			logger.LogE(err.Error())
-			return
+			return res, err
 		}
 	}
 

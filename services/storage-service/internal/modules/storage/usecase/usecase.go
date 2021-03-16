@@ -4,14 +4,13 @@ package usecase
 
 import (
 	"context"
+	"io"
 	"monorepo/services/storage-service/internal/modules/storage/domain"
-
-	"pkg.agungdp.dev/candi/candishared"
 )
 
 // StorageUsecase abstraction
 type StorageUsecase interface {
 	// add method
 	Hello(ctx context.Context) string
-	Upload(ctx context.Context, buff []byte, metadata *domain.UploadMetadata) <-chan candishared.Result
+	Upload(ctx context.Context, file io.Reader, metadata *domain.UploadMetadata) (err error)
 }

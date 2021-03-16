@@ -4,17 +4,15 @@ package usecase
 
 import (
 	"context"
-	"fmt"
-	"io/ioutil"
+	"io"
+	"os"
 
 	"monorepo/services/storage-service/internal/modules/storage/domain"
 	"monorepo/services/storage-service/pkg/shared/repository"
 
 	"github.com/minio/minio-go/v6"
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
-	"pkg.agungdp.dev/candi/logger"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
@@ -43,30 +41,27 @@ func (uc *storageUsecaseImpl) Hello(ctx context.Context) (msg string) {
 	return
 }
 
-func (uc *storageUsecaseImpl) Upload(ctx context.Context, buff []byte, metadata *domain.UploadMetadata) <-chan candishared.Result {
-	output := make(chan candishared.Result)
+func (uc *storageUsecaseImpl) Upload(ctx context.Context, file io.Reader, metadata *domain.UploadMetadata) (err error) {
+	trace := tracer.StartTrace(ctx, "StorageUsecase:Upload")
+	defer trace.Finish()
+	ctx = trace.Context()
 
-	go tracer.WithTraceFunc(ctx, "StorageUsecase:Upload", func(ctx context.Context, m map[string]interface{}) {
-		defer func() {
-			if r := recover(); r != nil {
-				output <- candishared.Result{Error: fmt.Errorf("%v", r)}
-			}
-			close(output)
-		}()
+	// _, err = uc.minioClient.PutObjectWithContext(ctx, "tong", metadata.Filename, file, -1,
+	// 	minio.PutObjectOptions{ContentType: metadata.ContentType})
+	// if err != nil {
+	// 	logger.LogE(err.Error())
+	// 	return err
+	// }
 
-		// n, err := uc.minioClient.PutObject("tong", metadata.Filename, bytes.NewReader(buff), -1,
-		// 	minio.PutObjectOptions{ContentType: metadata.ContentType})
-		// if err != nil {
-		// 	logger.LogE(err.Error())
-		// 	panic(err)
-		// }
+	fl, err := os.Create(metadata.Folder + metadata.Filename)
+	if err != nil {
+		return err
+	}
+	defer fl.Close()
 
-		if err := ioutil.WriteFile(metadata.Folder+metadata.Filename, buff, 0644); err != nil {
-			logger.LogE(err.Error())
-		}
+	io.Copy(fl, file)
 
-		// fmt.Println("Uploaded", " size: ", n, "Successfully.", "localhost:9000/tong/...")
-	})
+	// fmt.Println("Uploaded", " size: ", n, "Successfully.", "localhost:9000/tong/...")
 
-	return output
+	return
 }
