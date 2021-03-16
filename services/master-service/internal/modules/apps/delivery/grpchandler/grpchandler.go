@@ -3,14 +3,11 @@
 package grpchandler
 
 import (
-	"context"
-
 	proto "monorepo/sdk/master-service/proto/apps"
 	"monorepo/services/master-service/internal/modules/apps/usecase"
 
 	"google.golang.org/grpc"
 
-	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -35,18 +32,33 @@ func (h *GRPCHandler) Register(server *grpc.Server, mwGroup *types.MiddlewareGro
 	proto.RegisterAppsHandlerServer(server, h)
 
 	// register middleware for method
-	mwGroup.AddProto(proto.File_apps_apps_proto, "Hello", h.mw.GRPCBearerAuth)
+	// mwGroup.AddProto(proto.File_apps_apps_proto, "Hello", h.mw.GRPCBearerAuth)
 }
 
-// Hello rpc method
-func (h *GRPCHandler) Hello(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	trace := tracer.StartTrace(ctx, "AppsDeliveryGRPC:Hello")
+// GetUserApps rpc method
+func (h *GRPCHandler) GetUserApps(req *proto.RequestUserApps, stream proto.AppsHandler_GetUserAppsServer) (err error) {
+	trace := tracer.StartTrace(stream.Context(), "AppsDeliveryGRPC:GetUserApps")
 	defer trace.Finish()
-	ctx = trace.Context()
+	ctx := trace.Context()
 
-	tokenClaim := candishared.ParseTokenClaimFromContext(ctx) // must using GRPCBearerAuth in middleware for this handler
+	userApps, err := h.uc.GetUserApps(ctx, req.UserID)
+	if err != nil {
+		return err
+	}
 
-	return &proto.Response{
-		Message: ", with your session (" + tokenClaim.Audience + ")",
-	}, nil
+	for _, userApp := range userApps {
+		resp := &proto.ResponseUserApps{
+			ID: userApp.ID, Code: userApp.Code, Name: userApp.Name, Icon: userApp.Icon, FrontendUrl: userApp.FrontendURL, BackendUrl: userApp.BackendURL,
+			Role: &proto.ResponseUserApps_RoleType{
+				Code: userApp.Role.Code,
+				ID:   userApp.Role.ID,
+				Name: userApp.Role.Name,
+			},
+		}
+		if err := stream.Send(resp); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -3,13 +3,24 @@ package apps;
 option go_package = "monorepo/services/master-service/api/proto/apps";
 
 service AppsHandler {
-	rpc Hello(Request) returns (Response);
+	rpc GetUserApps(RequestUserApps) returns (stream ResponseUserApps);
 }
 
-message Request {
-    string Message=1;
+message RequestUserApps {
+    string UserID=1;
 }
 
-message Response {
-	string Message=1;
+message ResponseUserApps {
+	string ID=1;
+	string Code=2;
+	string Name=3;
+	string Icon=4;
+	string FrontendUrl=5;
+	string BackendUrl=6;
+	message RoleType {
+		string ID=1;
+		string Code=2;
+		string Name=3;
+	} 
+	RoleType Role = 7;
 }

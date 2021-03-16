@@ -4,6 +4,7 @@ package apps
 
 import (
 	"monorepo/services/master-service/internal/modules/apps/delivery/graphqlhandler"
+	"monorepo/services/master-service/internal/modules/apps/delivery/grpchandler"
 	"monorepo/services/master-service/internal/modules/apps/delivery/resthandler"
 	"monorepo/services/master-service/internal/modules/apps/delivery/workerhandler"
 	"monorepo/services/master-service/pkg/shared/usecase"
@@ -32,7 +33,7 @@ func NewModule(deps dependency.Dependency) *Module {
 
 	var mod Module
 	mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Apps(), deps.GetValidator())
-	// mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Apps(), deps.GetValidator())
+	mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Apps(), deps.GetValidator())
 	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Apps(), deps.GetValidator())
 
 	mod.workerHandlers = map[types.Worker]interfaces.WorkerHandler{

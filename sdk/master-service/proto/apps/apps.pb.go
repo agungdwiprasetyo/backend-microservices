@@ -29,16 +29,16 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type Request struct {
+type RequestUserApps struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+	UserID string `protobuf:"bytes,1,opt,name=UserID,proto3" json:"UserID,omitempty"`
 }
 
-func (x *Request) Reset() {
-	*x = Request{}
+func (x *RequestUserApps) Reset() {
+	*x = RequestUserApps{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_apps_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,13 +46,13 @@ func (x *Request) Reset() {
 	}
 }
 
-func (x *Request) String() string {
+func (x *RequestUserApps) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Request) ProtoMessage() {}
+func (*RequestUserApps) ProtoMessage() {}
 
-func (x *Request) ProtoReflect() protoreflect.Message {
+func (x *RequestUserApps) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_apps_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,28 +64,34 @@ func (x *Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Request.ProtoReflect.Descriptor instead.
-func (*Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use RequestUserApps.ProtoReflect.Descriptor instead.
+func (*RequestUserApps) Descriptor() ([]byte, []int) {
 	return file_apps_apps_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Request) GetMessage() string {
+func (x *RequestUserApps) GetUserID() string {
 	if x != nil {
-		return x.Message
+		return x.UserID
 	}
 	return ""
 }
 
-type Response struct {
+type ResponseUserApps struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+	ID          string                     `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	Code        string                     `protobuf:"bytes,2,opt,name=Code,proto3" json:"Code,omitempty"`
+	Name        string                     `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+	Icon        string                     `protobuf:"bytes,4,opt,name=Icon,proto3" json:"Icon,omitempty"`
+	FrontendUrl string                     `protobuf:"bytes,5,opt,name=FrontendUrl,proto3" json:"FrontendUrl,omitempty"`
+	BackendUrl  string                     `protobuf:"bytes,6,opt,name=BackendUrl,proto3" json:"BackendUrl,omitempty"`
+	Role        *ResponseUserApps_RoleType `protobuf:"bytes,7,opt,name=Role,proto3" json:"Role,omitempty"`
 }
 
-func (x *Response) Reset() {
-	*x = Response{}
+func (x *ResponseUserApps) Reset() {
+	*x = ResponseUserApps{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_apps_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,13 +99,13 @@ func (x *Response) Reset() {
 	}
 }
 
-func (x *Response) String() string {
+func (x *ResponseUserApps) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Response) ProtoMessage() {}
+func (*ResponseUserApps) ProtoMessage() {}
 
-func (x *Response) ProtoReflect() protoreflect.Message {
+func (x *ResponseUserApps) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_apps_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,14 +117,119 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Response.ProtoReflect.Descriptor instead.
-func (*Response) Descriptor() ([]byte, []int) {
+// Deprecated: Use ResponseUserApps.ProtoReflect.Descriptor instead.
+func (*ResponseUserApps) Descriptor() ([]byte, []int) {
 	return file_apps_apps_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Response) GetMessage() string {
+func (x *ResponseUserApps) GetID() string {
 	if x != nil {
-		return x.Message
+		return x.ID
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetIcon() string {
+	if x != nil {
+		return x.Icon
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetFrontendUrl() string {
+	if x != nil {
+		return x.FrontendUrl
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetBackendUrl() string {
+	if x != nil {
+		return x.BackendUrl
+	}
+	return ""
+}
+
+func (x *ResponseUserApps) GetRole() *ResponseUserApps_RoleType {
+	if x != nil {
+		return x.Role
+	}
+	return nil
+}
+
+type ResponseUserApps_RoleType struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ID   string `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	Code string `protobuf:"bytes,2,opt,name=Code,proto3" json:"Code,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+}
+
+func (x *ResponseUserApps_RoleType) Reset() {
+	*x = ResponseUserApps_RoleType{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_apps_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResponseUserApps_RoleType) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResponseUserApps_RoleType) ProtoMessage() {}
+
+func (x *ResponseUserApps_RoleType) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_apps_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResponseUserApps_RoleType.ProtoReflect.Descriptor instead.
+func (*ResponseUserApps_RoleType) Descriptor() ([]byte, []int) {
+	return file_apps_apps_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *ResponseUserApps_RoleType) GetID() string {
+	if x != nil {
+		return x.ID
+	}
+	return ""
+}
+
+func (x *ResponseUserApps_RoleType) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ResponseUserApps_RoleType) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -127,19 +238,36 @@ var File_apps_apps_proto protoreflect.FileDescriptor
 
 var file_apps_apps_proto_rawDesc = []byte{
 	0x0a, 0x0f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x12, 0x04, 0x61, 0x70, 0x70, 0x73, 0x22, 0x23, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x24, 0x0a, 0x08,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61,
-	0x67, 0x65, 0x32, 0x35, 0x0a, 0x0b, 0x41, 0x70, 0x70, 0x73, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65,
-	0x72, 0x12, 0x26, 0x0a, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x12, 0x0d, 0x2e, 0x61, 0x70, 0x70,
-	0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0e, 0x2e, 0x61, 0x70, 0x70, 0x73,
-	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x31, 0x5a, 0x2f, 0x6d, 0x6f, 0x6e,
-	0x6f, 0x72, 0x65, 0x70, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x6d,
-	0x61, 0x73, 0x74, 0x65, 0x72, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x12, 0x04, 0x61, 0x70, 0x70, 0x73, 0x22, 0x29, 0x0a, 0x0f, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x55, 0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x55, 0x73,
+	0x65, 0x72, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72,
+	0x49, 0x44, 0x22, 0x99, 0x02, 0x0a, 0x10, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x55,
+	0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x4e,
+	0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x12, 0x0a, 0x04, 0x49, 0x63, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x49,
+	0x63, 0x6f, 0x6e, 0x12, 0x20, 0x0a, 0x0b, 0x46, 0x72, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x64, 0x55,
+	0x72, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x46, 0x72, 0x6f, 0x6e, 0x74, 0x65,
+	0x6e, 0x64, 0x55, 0x72, 0x6c, 0x12, 0x1e, 0x0a, 0x0a, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0x55, 0x72, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x42, 0x61, 0x63, 0x6b, 0x65,
+	0x6e, 0x64, 0x55, 0x72, 0x6c, 0x12, 0x33, 0x0a, 0x04, 0x52, 0x6f, 0x6c, 0x65, 0x18, 0x07, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x61, 0x70, 0x70, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x55, 0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x73, 0x2e, 0x52, 0x6f, 0x6c, 0x65,
+	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x52, 0x6f, 0x6c, 0x65, 0x1a, 0x42, 0x0a, 0x08, 0x52, 0x6f,
+	0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61,
+	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x32, 0x4d,
+	0x0a, 0x0b, 0x41, 0x70, 0x70, 0x73, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x12, 0x3e, 0x0a,
+	0x0b, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x73, 0x12, 0x15, 0x2e, 0x61,
+	0x70, 0x70, 0x73, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x55, 0x73, 0x65, 0x72, 0x41,
+	0x70, 0x70, 0x73, 0x1a, 0x16, 0x2e, 0x61, 0x70, 0x70, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x55, 0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x73, 0x30, 0x01, 0x42, 0x31, 0x5a,
+	0x2f, 0x6d, 0x6f, 0x6e, 0x6f, 0x72, 0x65, 0x70, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x73, 0x2f, 0x6d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x61, 0x70, 0x70, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -154,19 +282,21 @@ func file_apps_apps_proto_rawDescGZIP() []byte {
 	return file_apps_apps_proto_rawDescData
 }
 
-var file_apps_apps_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_apps_apps_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_apps_apps_proto_goTypes = []interface{}{
-	(*Request)(nil),  // 0: apps.Request
-	(*Response)(nil), // 1: apps.Response
+	(*RequestUserApps)(nil),           // 0: apps.RequestUserApps
+	(*ResponseUserApps)(nil),          // 1: apps.ResponseUserApps
+	(*ResponseUserApps_RoleType)(nil), // 2: apps.ResponseUserApps.RoleType
 }
 var file_apps_apps_proto_depIdxs = []int32{
-	0, // 0: apps.AppsHandler.Hello:input_type -> apps.Request
-	1, // 1: apps.AppsHandler.Hello:output_type -> apps.Response
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: apps.ResponseUserApps.Role:type_name -> apps.ResponseUserApps.RoleType
+	0, // 1: apps.AppsHandler.GetUserApps:input_type -> apps.RequestUserApps
+	1, // 2: apps.AppsHandler.GetUserApps:output_type -> apps.ResponseUserApps
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_apps_apps_proto_init() }
@@ -176,7 +306,7 @@ func file_apps_apps_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_apps_apps_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Request); i {
+			switch v := v.(*RequestUserApps); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -188,7 +318,19 @@ func file_apps_apps_proto_init() {
 			}
 		}
 		file_apps_apps_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Response); i {
+			switch v := v.(*ResponseUserApps); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_apps_apps_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponseUserApps_RoleType); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -206,7 +348,7 @@ func file_apps_apps_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_apps_apps_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -232,7 +374,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AppsHandlerClient interface {
-	Hello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	GetUserApps(ctx context.Context, in *RequestUserApps, opts ...grpc.CallOption) (AppsHandler_GetUserAppsClient, error)
 }
 
 type appsHandlerClient struct {
@@ -243,59 +385,86 @@ func NewAppsHandlerClient(cc grpc.ClientConnInterface) AppsHandlerClient {
 	return &appsHandlerClient{cc}
 }
 
-func (c *appsHandlerClient) Hello(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/apps.AppsHandler/Hello", in, out, opts...)
+func (c *appsHandlerClient) GetUserApps(ctx context.Context, in *RequestUserApps, opts ...grpc.CallOption) (AppsHandler_GetUserAppsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_AppsHandler_serviceDesc.Streams[0], "/apps.AppsHandler/GetUserApps", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &appsHandlerGetUserAppsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type AppsHandler_GetUserAppsClient interface {
+	Recv() (*ResponseUserApps, error)
+	grpc.ClientStream
+}
+
+type appsHandlerGetUserAppsClient struct {
+	grpc.ClientStream
+}
+
+func (x *appsHandlerGetUserAppsClient) Recv() (*ResponseUserApps, error) {
+	m := new(ResponseUserApps)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // AppsHandlerServer is the server API for AppsHandler service.
 type AppsHandlerServer interface {
-	Hello(context.Context, *Request) (*Response, error)
+	GetUserApps(*RequestUserApps, AppsHandler_GetUserAppsServer) error
 }
 
 // UnimplementedAppsHandlerServer can be embedded to have forward compatible implementations.
 type UnimplementedAppsHandlerServer struct {
 }
 
-func (*UnimplementedAppsHandlerServer) Hello(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+func (*UnimplementedAppsHandlerServer) GetUserApps(*RequestUserApps, AppsHandler_GetUserAppsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetUserApps not implemented")
 }
 
 func RegisterAppsHandlerServer(s *grpc.Server, srv AppsHandlerServer) {
 	s.RegisterService(&_AppsHandler_serviceDesc, srv)
 }
 
-func _AppsHandler_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
-	if err := dec(in); err != nil {
-		return nil, err
+func _AppsHandler_GetUserApps_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(RequestUserApps)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(AppsHandlerServer).Hello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/apps.AppsHandler/Hello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppsHandlerServer).Hello(ctx, req.(*Request))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(AppsHandlerServer).GetUserApps(m, &appsHandlerGetUserAppsServer{stream})
+}
+
+type AppsHandler_GetUserAppsServer interface {
+	Send(*ResponseUserApps) error
+	grpc.ServerStream
+}
+
+type appsHandlerGetUserAppsServer struct {
+	grpc.ServerStream
+}
+
+func (x *appsHandlerGetUserAppsServer) Send(m *ResponseUserApps) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 var _AppsHandler_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "apps.AppsHandler",
 	HandlerType: (*AppsHandlerServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "Hello",
-			Handler:    _AppsHandler_Hello_Handler,
+			StreamName:    "GetUserApps",
+			Handler:       _AppsHandler_GetUserApps_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "apps/apps.proto",
 }

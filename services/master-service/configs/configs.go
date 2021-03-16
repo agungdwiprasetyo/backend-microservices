@@ -13,6 +13,7 @@ import (
 	"monorepo/services/master-service/pkg/shared/usecase"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+
 	// "pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/candihelper"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
@@ -30,6 +31,7 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 	candihelper.MustParseEnv(&sharedEnv)
 	shared.SetEnv(sharedEnv)
 
+	mw := &middleware.Middleware{}
 	baseCfg.LoadFunc(func(ctx context.Context) []interfaces.Closer {
 		brokerDeps := broker.InitBrokers(
 		// types.Kafka,
@@ -44,10 +46,11 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 			sdk.SetAuthService(authService),
 		)
 
+		mw.TokenValidator = authService
+
 		// inject all service dependencies
 		// See all option in dependency package
 		deps = dependency.InitDependency(
-			dependency.SetMiddleware(middleware.NewMiddleware(authService, nil)),
 			dependency.SetValidator(validator.NewValidator()),
 			dependency.SetBroker(brokerDeps),
 			dependency.SetRedisPool(redisDeps),
@@ -66,5 +69,7 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 	repository.SetSharedRepository(deps)
 	usecase.SetSharedUsecase(deps)
 
+	mw.ACLPermissionChecker = usecase.GetSharedUsecase().ACL()
+	deps.SetMiddleware(mw)
 	return deps
 }
