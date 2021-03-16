@@ -126,6 +126,7 @@ func (r *roleRepoMongo) GroupByID(ctx context.Context, roleID ...string) (groups
 			"$in": roleID,
 		},
 	}
+	trace.SetTag("query", where)
 	cur, err := r.readDB.Collection(r.collection).Find(ctx, where)
 	if err != nil {
 		trace.SetError(err)

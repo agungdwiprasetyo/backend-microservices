@@ -37,14 +37,14 @@ func NewRestHandler(mw interfaces.Middleware, uc usecase.AppsUsecase, validator 
 func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
-	apps := v1Root.Group("/apps")
-	apps.GET("", h.getAllApps)
-	apps.GET("/:code", h.getDetailAppByCode, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
-	apps.POST("", h.saveApps)
-	apps.POST("/permission/:id", h.saveAppPermission)
-	apps.GET("/permission", h.getAllPermissions)
-	apps.GET("/permission/me", h.getAllMePermissions, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
-	apps.GET("/me", h.getAllMeApps, echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	apps := v1Root.Group("/apps", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
+	apps.GET("", h.getAllApps, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllApps")))
+	apps.GET("/:code", h.getDetailAppByCode, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getDetailApps")))
+	apps.POST("", h.saveApps, echo.WrapMiddleware(h.mw.HTTPPermissionACL("addApps")))
+	apps.POST("/permission/:id", h.saveAppPermission, echo.WrapMiddleware(h.mw.HTTPPermissionACL("saveAppPermission")))
+	apps.GET("/permission", h.getAllPermissions, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllPermissions")))
+	apps.GET("/permission/me", h.getAllMePermissions)
+	apps.GET("/me", h.getAllMeApps)
 }
 
 func (h *RestHandler) getAllApps(c echo.Context) error {

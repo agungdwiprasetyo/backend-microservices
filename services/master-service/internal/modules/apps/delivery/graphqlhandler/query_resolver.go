@@ -5,6 +5,9 @@ package graphqlhandler
 import (
 	"context"
 
+	shareddomain "monorepo/services/master-service/pkg/shared/domain"
+
+	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
@@ -30,4 +33,15 @@ func (q *queryResolver) GetAll(ctx context.Context, input struct{ Filter *Common
 	return AppListResolver{
 		Meta: meta, Data: data,
 	}, nil
+}
+
+// GetMePermissions resolver
+func (q *queryResolver) GetMePermissions(ctx context.Context, input struct{ AppsCode string }) (results []shareddomain.Permission, err error) {
+	trace := tracer.StartTrace(ctx, "AppsDeliveryGraphQL:GetMePermissions")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	tokenClaim := candishared.ParseTokenClaimFromContext(ctx)
+	userID := tokenClaim.Additional.(map[string]interface{})["user_id"].(string)
+	return q.root.uc.GetAllUserPermissions(ctx, input.AppsCode, userID)
 }

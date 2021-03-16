@@ -2,12 +2,13 @@
 
 # AppsModule Module Area
 type AppsQueryModule {
-    get_all(filter: FilterListInput): AppsListResolver!
+    # get_all(filter: FilterListInput): AppsListResolver!
+    get_me_permissions(apps_code: String!): [PermissionResolver!]!
 }
 
 type AppsMutationModule {
     save(data: AppsInputResolver!): String!
-    save_permissions(app_id: String!, modules: [ModuleInputResolver!]!): String!
+    # save_permissions(app_id: String!, modules: [ModuleInputResolver!]!): String!
 }
 
 type AppsSubscriptionModule {
@@ -25,22 +26,14 @@ type AppsResolver {
 	name: String!
 	createdAt: String!
 	modifiedAt: String!
-    modules: [ModuleResolver!]!
-}
-
-type ModuleResolver {
-	id: String!
-	code: String!
-	name: String!
-	icon: String!
-	permissions: [PermissionResolver!]!
-	createdAt: String!
-	modifiedAt: String!
 }
 
 type PermissionResolver {
 	id: String!
 	code: String!
+	name: String!
+	icon: String!
+	childs: [PermissionResolver!]!
 	createdAt: String!
 	modifiedAt: String!
 }
@@ -50,9 +43,4 @@ input AppsInputResolver {
 	name: String!
 }
 
-input ModuleInputResolver {
-	code: String!
-	name: String!
-	permissions: [String!]!
-}
 

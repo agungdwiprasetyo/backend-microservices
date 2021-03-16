@@ -7,15 +7,14 @@ schema {
 }
 
 type Query {
-	auth: AuthQueryModule
 	apps: AppsQueryModule
+	acl: AclQueryModule
 }
 
 type Mutation {
-	auth: AuthMutationModule
 	apps: AppsMutationModule
 }
 
 type Subscription {
-	auth: AuthSubscriptionModule
+	apps: AppsSubscriptionModule
 }

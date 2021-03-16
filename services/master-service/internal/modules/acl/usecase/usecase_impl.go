@@ -75,6 +75,9 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 		if err := uc.repoMongo.PermissionRepo.Find(ctx, &perm); err != nil {
 			return resp, fmt.Errorf("Permission data '%s' not found", permCode)
 		}
+		if perm.AppsID != apps.ID {
+			return resp, fmt.Errorf("Permission data '%s' invalid", permCode)
+		}
 		currentRole.Permissions[perm.Code] = perm.ID
 
 		fullParentPath := allVisitedPath[perm.Code]
@@ -245,4 +248,17 @@ func (uc *aclUsecaseImpl) GetDetailRole(ctx context.Context, roleID string) (dat
 	data.Apps.Name = apps.Name
 	data.Permissions = shareddomain.MakeTreePermission(permissions)
 	return
+}
+
+func (uc *aclUsecaseImpl) RevokeUserRole(ctx context.Context, userID, roleID string) (err error) {
+	trace := tracer.StartTrace(ctx, "AclUsecase:RevokeUserRole")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	acl := shareddomain.ACL{UserID: userID, RoleID: roleID}
+	if err := uc.repoMongo.AclRepo.Find(ctx, &acl); err != nil {
+		return err
+	}
+
+	return uc.repoMongo.AclRepo.Delete(ctx, &acl)
 }

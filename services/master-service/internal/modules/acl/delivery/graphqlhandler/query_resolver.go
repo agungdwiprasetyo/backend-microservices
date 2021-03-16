@@ -4,6 +4,7 @@ package graphqlhandler
 
 import (
 	"context"
+	"monorepo/services/master-service/internal/modules/acl/domain"
 
 	"pkg.agungdp.dev/candi/tracer"
 )
@@ -12,11 +13,21 @@ type queryResolver struct {
 	root *GraphQLHandler
 }
 
-// Hello resolver
-func (q *queryResolver) Hello(ctx context.Context) (string, error) {
-	trace := tracer.StartTrace(ctx, "AclDeliveryGraphQL-Hello")
+// GetAllRole resolver
+func (q *queryResolver) GetAllRole(ctx context.Context, input struct{ Filter *CommonFilter }) (resp RoleResult, err error) {
+	trace := tracer.StartTrace(ctx, "AclDeliveryGraphQL:GetAllRole")
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	return "ok", nil
+	if input.Filter == nil {
+		input.Filter = new(CommonFilter)
+	}
+	data, meta, err := q.root.uc.GetAllRole(ctx, domain.RoleListFilter{Filter: input.Filter.ToSharedFilter()})
+	if err != nil {
+		return resp, err
+	}
+
+	resp.Meta = meta
+	resp.Data = data
+	return
 }

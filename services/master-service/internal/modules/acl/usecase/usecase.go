@@ -18,4 +18,5 @@ type ACLUsecase interface {
 	CheckPermission(ctx context.Context, userID string, permissionCode string) (role string, err error)
 	GetAllRole(ctx context.Context, filter domain.RoleListFilter) ([]domain.RoleResponse, candishared.Meta, error)
 	GetDetailRole(ctx context.Context, roleID string) (data domain.RoleResponse, err error)
+	RevokeUserRole(ctx context.Context, userID, roleID string) (err error)
 }

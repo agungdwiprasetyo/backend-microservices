@@ -106,9 +106,8 @@ func (r *aclRepoMongo) Find(ctx context.Context, data *shareddomain.ACL) (err er
 }
 
 func (r *aclRepoMongo) Save(ctx context.Context, data *shareddomain.ACL) (err error) {
-	trace := tracer.StartTrace(ctx, "AclRepoMongo:Count")
-	defer trace.Finish()
-	defer func() { trace.SetError(err) }()
+	trace := tracer.StartTrace(ctx, "AclRepoMongo:Save")
+	defer func() { trace.SetError(err); trace.Finish() }()
 	ctx = trace.Context()
 	tracer.Log(ctx, "data", data)
 
@@ -130,5 +129,15 @@ func (r *aclRepoMongo) Save(ctx context.Context, data *shareddomain.ACL) (err er
 			}, &opt)
 	}
 
+	return
+}
+
+func (r *aclRepoMongo) Delete(ctx context.Context, data *shareddomain.ACL) (err error) {
+	trace := tracer.StartTrace(ctx, "AclRepoMongo:Delete")
+	defer func() { trace.SetError(err); trace.Finish() }()
+	ctx = trace.Context()
+	tracer.Log(ctx, "data", data)
+
+	_, err = r.writeDB.Collection(r.collection).DeleteOne(ctx, bson.M{"_id": data.ID})
 	return
 }

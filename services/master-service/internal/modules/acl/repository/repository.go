@@ -14,6 +14,7 @@ type AclRepository interface {
 	FindByUserID(ctx context.Context, userID string) (data []shareddomain.ACL, err error)
 	Find(ctx context.Context, data *shareddomain.ACL) (err error)
 	Save(ctx context.Context, data *shareddomain.ACL) (err error)
+	Delete(ctx context.Context, data *shareddomain.ACL) (err error)
 }
 
 // RoleRepository abstract interface

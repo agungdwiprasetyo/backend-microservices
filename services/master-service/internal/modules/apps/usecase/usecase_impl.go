@@ -106,6 +106,10 @@ func (uc *appsUsecaseImpl) Save(ctx context.Context, data *shareddomain.Apps) (e
 	defer trace.Finish()
 	ctx = trace.Context()
 
+	current := shareddomain.Apps{Code: data.Code}
+	uc.repoMongo.AppsRepo.Find(ctx, &current)
+	data.ID = current.ID
+
 	return uc.repoMongo.AppsRepo.Save(ctx, data)
 }
 

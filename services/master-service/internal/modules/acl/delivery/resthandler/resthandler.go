@@ -42,6 +42,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	acl.POST("/checkpermission", h.checkPermission)
 	acl.GET("/role", h.getAllRole)        //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.getAllRole")))
 	acl.GET("/role/:id", h.getDetailRole) //, echo.WrapMiddleware(h.mw.HTTPPermissionACL("master-service.acl.getDetailRole")))
+	acl.DELETE("/role/revoke", h.revokeUserRole)
 }
 
 func (h *RestHandler) getAllRole(c echo.Context) error {
@@ -131,4 +132,21 @@ func (h *RestHandler) getDetailRole(c echo.Context) error {
 	}
 
 	return wrapper.NewHTTPResponse(http.StatusOK, "ok", data).JSON(c.Response())
+}
+
+func (h *RestHandler) revokeUserRole(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "AclDeliveryREST:revokeUserRole")
+	defer trace.Finish()
+
+	var payload domain.GrantUserRequest
+	if err := c.Bind(&payload); err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	err := h.uc.RevokeUserRole(trace.Context(), payload.UserID, payload.RoleID)
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "Success").JSON(c.Response())
 }

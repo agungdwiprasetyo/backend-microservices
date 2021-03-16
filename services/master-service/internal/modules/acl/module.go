@@ -4,6 +4,7 @@ package acl
 
 import (
 	// "monorepo/services/master-service/internal/modules/acl/delivery/graphqlhandler"
+	"monorepo/services/master-service/internal/modules/acl/delivery/graphqlhandler"
 	"monorepo/services/master-service/internal/modules/acl/delivery/grpchandler"
 	"monorepo/services/master-service/internal/modules/acl/delivery/resthandler"
 	"monorepo/services/master-service/internal/modules/acl/delivery/workerhandler"
@@ -34,7 +35,7 @@ func NewModule(deps dependency.Dependency) *Module {
 	var mod Module
 	mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.ACL(), deps.GetValidator())
 	mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.ACL(), deps.GetValidator())
-	// mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.ACL(), deps.GetValidator())
+	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.ACL(), deps.GetValidator())
 
 	mod.workerHandlers = map[types.Worker]interfaces.WorkerHandler{
 		// types.Kafka:           workerhandler.NewKafkaHandler(usecaseUOW.ACL(), deps.GetValidator()),

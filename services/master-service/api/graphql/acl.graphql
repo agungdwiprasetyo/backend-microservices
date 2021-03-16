@@ -2,7 +2,7 @@
 
 # AclModule Module Area
 type AclQueryModule {
-    hello(): String!
+    get_all_role(filter: FilterListInput): RoleListResolver!
 }
 
 type AclMutationModule {
@@ -11,4 +11,22 @@ type AclMutationModule {
 
 type AclSubscriptionModule {
     hello(): String!
+}
+
+type RoleListResolver {
+    meta: Meta!
+    data: [RoleACLResolver!]!
+}
+
+type RoleACLResolver {
+    id: String!
+    code: String!
+    name: String!
+    apps: RoleAppResolver!
+}
+
+type RoleAppResolver {
+    id: String!
+    code: String!
+    name: String!
 }
