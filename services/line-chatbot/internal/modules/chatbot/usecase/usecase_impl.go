@@ -37,7 +37,7 @@ func NewChatbotUsecase(deps dependency.Dependency) ChatbotUsecase {
 		repoMongo:  repository.GetSharedRepoMongo(),
 		botAPI:     linebotapi.NewLineBotHTTP(),
 		translator: translator.NewTranslatorHTTP(),
-		lineClient: deps.GetExtended()[helper.LineClient].(*linebot.Client),
+		lineClient: deps.GetExtended(helper.LineClient).(*linebot.Client),
 	}
 }
 
