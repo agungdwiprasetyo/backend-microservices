@@ -2,13 +2,31 @@
 
 package graphqlhandler
 
-import "context"
+import (
+	"context"
+	"monorepo/services/user-service/internal/modules/auth/domain"
+
+	"pkg.agungdp.dev/candi/tracer"
+)
 
 type mutationResolver struct {
 	root *GraphQLHandler
 }
 
-// Hello resolver
-func (m *mutationResolver) Hello(ctx context.Context) (string, error) {
-	return "Hello", nil
-}	
+// Login resolver
+func (m *mutationResolver) Login(ctx context.Context, input struct {
+	Username string
+	Password string
+}) (resp domain.LoginResponse, err error) {
+
+	trace := tracer.StartTrace(ctx, "DeliveryGraphQL:Login")
+	defer trace.Finish()
+	ctx = trace.Context()
+
+	data, err := m.root.uc.Login(ctx, &domain.LoginRequest{Username: input.Username, Password: input.Password})
+	if err != nil {
+		return resp, err
+	}
+
+	return data, nil
+}

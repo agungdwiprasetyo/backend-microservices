@@ -14,6 +14,7 @@ import (
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
+	"pkg.agungdp.dev/candi/logger"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
@@ -65,7 +66,12 @@ func (uc *authUsecaseImpl) Login(ctx context.Context, req *domain.LoginRequest) 
 		return resp, err
 	}
 
-	resp.Detail = member
+	resp.UserApps, err = uc.sdk.MasterService().GetUserApps(ctx, member.ID)
+	if err != nil {
+		logger.LogE(err.Error())
+	}
+
+	resp.Profile = member
 	resp.Token = token
 	return
 }

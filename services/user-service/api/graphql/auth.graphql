@@ -6,9 +6,30 @@ type AuthQueryModule {
 }
 
 type AuthMutationModule {
-    hello(): String!
+    login(username: String!, password: String!): ResponseLoginResolver!
 }
 
 type AuthSubscriptionModule {
     hello(): String!
+}
+
+type ResponseLoginResolver {
+    token: String!
+    userApps: [UserAppResolver!]!
+}
+
+type UserAppResolver {
+    id: String!
+    code: String!
+    name: String!
+    icon: String!
+    frontendUrl: String!
+    backendUrl: String!
+    role: RoleResolver!
+}
+
+type RoleResolver {
+    id: String!
+    code: String!
+    name: String!
 }

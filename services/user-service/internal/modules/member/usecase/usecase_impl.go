@@ -5,6 +5,7 @@ package usecase
 import (
 	"context"
 
+	"monorepo/sdk"
 	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/services/user-service/pkg/shared/repository"
 
@@ -18,6 +19,7 @@ type memberUsecaseImpl struct {
 	cache interfaces.Cache
 
 	repoMongo *repository.RepoMongo
+	sdk       sdk.SDK
 }
 
 // NewMemberUsecase usecase impl constructor
@@ -26,6 +28,7 @@ func NewMemberUsecase(deps dependency.Dependency) MemberUsecase {
 		cache: deps.GetRedisPool().Cache(),
 
 		repoMongo: repository.GetSharedRepoMongo(),
+		sdk:       sdk.GetSDK(),
 	}
 }
 

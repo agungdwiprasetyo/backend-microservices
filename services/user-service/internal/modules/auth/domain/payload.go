@@ -1,6 +1,9 @@
 package domain
 
-import shareddomain "monorepo/services/user-service/pkg/shared/domain"
+import (
+	masterservice "monorepo/sdk/master-service"
+	shareddomain "monorepo/services/user-service/pkg/shared/domain"
+)
 
 // LoginRequest request payload
 type LoginRequest struct {
@@ -10,6 +13,7 @@ type LoginRequest struct {
 
 // LoginResponse request payload
 type LoginResponse struct {
-	Detail shareddomain.Member `json:"detail"`
-	Token  string              `json:"token"`
+	Token    string                   `json:"token"`
+	Profile  shareddomain.Member      `json:"profile"`
+	UserApps []masterservice.UserApps `json:"userApps"`
 }

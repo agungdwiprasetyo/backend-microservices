@@ -37,8 +37,8 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	v1Root := root.Group(candihelper.V1)
 
 	member := v1Root.Group("/member", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
-	member.GET("", h.getAllMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("user-service.member.getAllMember")))
-	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("user-service.member.addMember")))
+	member.GET("", h.getAllMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllMember")))
+	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("addMember")))
 }
 
 func (h *RestHandler) getAllMember(c echo.Context) error {
