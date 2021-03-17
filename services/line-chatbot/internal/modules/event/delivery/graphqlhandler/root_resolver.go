@@ -25,7 +25,7 @@ func NewGraphQLHandler(mw interfaces.Middleware, uc usecase.EventUsecase, valida
 
 // RegisterMiddleware register resolver based on schema in "api/graphql/*" path
 func (h *GraphQLHandler) RegisterMiddleware(mwGroup *types.MiddlewareGroup) {
-	mwGroup.Add("EventQueryModule.hello", h.mw.GraphQLBearerAuth)
+	mwGroup.Add("EventQueryModule.getAll", h.mw.GraphQLBearerAuth)
 	mwGroup.Add("EventMutationModule.hello", h.mw.GraphQLBasicAuth)
 }
 
