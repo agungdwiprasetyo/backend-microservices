@@ -40,7 +40,7 @@ func NewModule(deps dependency.Dependency) *Module {
 		// types.Kafka:           workerhandler.NewKafkaHandler(usecaseUOW.Token(), deps.GetValidator()),
 		// types.Scheduler:       workerhandler.NewCronHandler(usecaseUOW.Token(), deps.GetValidator()),
 		types.RedisSubscriber: workerhandler.NewRedisHandler(usecaseUOW.Token(), deps.GetValidator()),
-		// types.TaskQueue:       workerhandler.NewTaskQueueHandler(usecaseUOW.Token(), deps.GetValidator()),
+		types.TaskQueue:       workerhandler.NewTaskQueueHandler(usecaseUOW.Token(), deps.GetValidator()),
 	}
 
 	return &mod

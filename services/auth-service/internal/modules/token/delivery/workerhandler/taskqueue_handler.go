@@ -30,8 +30,8 @@ func NewTaskQueueHandler(uc usecase.TokenUsecase, validator interfaces.Validator
 
 // MountHandlers mount handler group
 func (h *TaskQueueHandler) MountHandlers(group *types.WorkerHandlerGroup) {
-	group.Add("token-task-one-wkwkwk", h.taskOne)
-	group.Add("token-task-two-wkwkwk", h.taskTwo)
+	group.Add("token-task-one", h.taskOne)
+	group.Add("token-task-two", h.taskTwo)
 }
 
 func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {
@@ -40,6 +40,7 @@ func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {
 	ctx = trace.Context()
 
 	// h.uc.Hello(ctx)
+	time.Sleep(2 * time.Second)
 
 	return &taskqueueworker.ErrorRetrier{
 		Delay:   10 * time.Second,
