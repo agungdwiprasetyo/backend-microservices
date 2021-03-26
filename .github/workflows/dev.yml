@@ -62,3 +62,8 @@ jobs:
         tags: gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
+
+    - name: Deploy
+      run: |
+        gcloud compute ssh --zone "${{ secrets.GCE_INSTANCE_ZONE }}" "${{ secrets.GCE_INSTANCE }}" --project "${{ secrets.GCE_PROJECT }}" \
+        --command 'docker pull gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest && ${{ secrets.GCE_COMMAND }}'
