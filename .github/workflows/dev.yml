@@ -26,42 +26,42 @@ jobs:
         project_id: ${{ secrets.GCS_PROJECT }}
         export_default_credentials: true
 
-    # - name: Sync service environment
-    #   run: |
-    #     gsutil -m rsync -R gs://${{ secrets.GCS_SERVICE_ENV }}/${{ env.SERVICE_NAME }} services/${{ env.SERVICE_NAME }}
+    - name: Sync service environment
+      run: |
+        gsutil -m rsync -R gs://${{ secrets.GCS_SERVICE_ENV }}/${{ env.SERVICE_NAME }} services/${{ env.SERVICE_NAME }}
 
-    # - name: Unit Test
-    #   run: make test service=${{ env.SERVICE_NAME }}
+    - name: Unit Test
+      run: make test service=${{ env.SERVICE_NAME }}
 
-    # - name: Set up Docker Buildx
-    #   id: buildx
-    #   uses: docker/setup-buildx-action@v1
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
 
-    # # Configure docker to use the gcloud command-line tool as a credential helper
-    # - run: |
-    #     gcloud auth configure-docker -q
+    # Configure docker to use the gcloud command-line tool as a credential helper
+    - run: |
+        gcloud auth configure-docker -q
 
-    # - name: Cache Docker layers
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: /tmp/.buildx-cache
-    #     key: ${{ runner.os }}-buildx-${{ github.sha }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-buildx-
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
 
-    # - name: Build and push
-    #   id: docker_build
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #     context: ./
-    #     file: ./Dockerfile
-    #     builder: ${{ steps.buildx.outputs.name }}
-    #     build-args: |
-    #       SERVICE_NAME=${{ env.SERVICE_NAME }}
-    #     push: true
-    #     tags: gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest
-    #     cache-from: type=local,src=/tmp/.buildx-cache
-    #     cache-to: type=local,dest=/tmp/.buildx-cache
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: ./
+        file: ./Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        build-args: |
+          SERVICE_NAME=${{ env.SERVICE_NAME }}
+        push: true
+        tags: gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
 
     - name: Deploy
       run: |
