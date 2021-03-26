@@ -71,6 +71,6 @@ jobs:
         gcloud compute ssh --zone "${{ secrets.GCE_INSTANCE_ZONE }}" "${{ secrets.GCE_INSTANCE }}" --project "${{ secrets.GCE_PROJECT }}" \
         --command 'sudo gcloud auth activate-service-account --key-file=/home/runner/key.json && \
         sudo gcloud config set project ${{ secrets.GCS_PROJECT }} && \
-        sudo docker login -u oauth2accesstoken -p "$(gcloud auth print-access-token)" https://gcr.io && \
+        sudo docker login -u oauth2accesstoken -p "$(sudo gcloud auth print-access-token)" https://gcr.io && \
         sudo docker pull gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest && \
         ${{ secrets.GCE_COMMAND }}'
