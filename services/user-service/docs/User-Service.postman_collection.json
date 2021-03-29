@@ -8,11 +8,14 @@
 		{
 			"name": "Login",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"plain\"\n}",
+					"raw": "{\n    \"username\": \"user\",\n    \"password\": \"plain\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -65,6 +68,35 @@
 					"path": [
 						"v1",
 						"member"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Me Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlUser}}/v1/member/me",
+					"host": [
+						"{{urlUser}}"
+					],
+					"path": [
+						"v1",
+						"member",
+						"me"
 					]
 				}
 			},
