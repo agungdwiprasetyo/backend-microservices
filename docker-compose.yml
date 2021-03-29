@@ -1,0 +1,31 @@
+version: "3"
+services:
+  master-service:
+    network_mode: host
+    image: "agungdp22/master-service:latest"
+    volumes:
+      - ${PWD}/services/master-service/.env:/root/services/master-service/.env
+
+  auth-service:
+    network_mode: host
+    image: "agungdp22/auth-service:latest"
+    volumes:
+      - ${PWD}/services/auth-service/.env:/root/services/auth-service/.env
+
+  user-service:
+    network_mode: host
+    image: "agungdp22/user-service:latest"
+    volumes:
+      - ${PWD}/services/user-service/.env:/root/services/user-service/.env
+
+  storage-service:
+    network_mode: host
+    image: "agungdp22/storage-service:latest"
+    volumes:
+      - ${PWD}/services/storage-service/.env:/root/services/storage-service/.env
+
+  line-chatbot:
+    network_mode: host
+    image: "agungdp22/line-chatbot:latest"
+    volumes:
+      - ${PWD}/services/line-chatbot/.env:/root/services/line-chatbot/.env

@@ -28,9 +28,11 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o bin services/$SERVICE_NAME/*.go
 FROM alpine:latest  
 
 ARG SERVICE_NAME
+ARG BUILD_NUMBER
 RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /root/
 ENV WORKDIR=services/$SERVICE_NAME/
+ENV BUILD_NUMBER=$BUILD_NUMBER
 
 RUN mkdir -p /root/services/$SERVICE_NAME
 RUN mkdir -p /root/services/$SERVICE_NAME/api

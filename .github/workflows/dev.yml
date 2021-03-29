@@ -58,6 +58,7 @@ jobs:
         builder: ${{ steps.buildx.outputs.name }}
         build-args: |
           SERVICE_NAME=${{ env.SERVICE_NAME }}
+          BUILD_NUMBER=${{ github.run_id }}
         push: true
         tags: gcr.io/${{ secrets.GCS_PROJECT }}/${{ env.SERVICE_NAME }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
