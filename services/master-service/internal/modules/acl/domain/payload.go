@@ -6,8 +6,9 @@ import (
 
 // GrantUserRequest payload
 type GrantUserRequest struct {
-	UserID string `json:"userId"`
-	RoleID string `json:"roleId"`
+	UserID                string   `json:"userId"`
+	RoleID                string   `json:"roleId"`
+	AdditionalPermissions []string `json:"additionalPermission"`
 }
 
 // AddRoleRequest model

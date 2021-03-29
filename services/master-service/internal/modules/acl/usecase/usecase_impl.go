@@ -137,6 +137,43 @@ func (uc *aclUsecaseImpl) GrantUser(ctx context.Context, payload domain.GrantUse
 		}
 	}
 
+	aclData.AdditionalPermissions = map[string]string{}
+	if len(payload.AdditionalPermissions) > 0 {
+		apps := shareddomain.Apps{ID: roleData.AppsID}
+		if err := uc.repoMongo.AppsRepo.Find(ctx, &apps); err != nil {
+			return errors.New("Apps not found")
+		}
+		permList, _ := uc.repoMongo.PermissionRepo.FetchAll(ctx, appsdomain.FilterPermission{
+			Filter: candishared.Filter{ShowAll: true}, AppID: roleData.AppsID,
+		})
+		rootPermission := shareddomain.Permission{
+			Code: apps.Code, Childs: shareddomain.MakeTreePermission(permList),
+		}
+		allVisitedPath := rootPermission.GetAllVisitedPath()
+		for _, permCode := range payload.AdditionalPermissions {
+			if _, ok := roleData.Permissions[permCode]; ok {
+				return fmt.Errorf("Permission data '%s' is exist in role '%s'", permCode, roleData.Name)
+			}
+
+			perm := shareddomain.Permission{Code: permCode}
+			if err := uc.repoMongo.PermissionRepo.Find(ctx, &perm); err != nil {
+				return fmt.Errorf("Permission data '%s' not found", permCode)
+			}
+			if perm.AppsID != apps.ID {
+				return fmt.Errorf("Permission data '%s' invalid", permCode)
+			}
+			aclData.AdditionalPermissions[perm.Code] = perm.ID
+
+			fullParentPath := allVisitedPath[perm.Code]
+			for _, path := range fullParentPath {
+				if path.Code == apps.Code {
+					continue
+				}
+				aclData.AdditionalPermissions[path.Code] = path.ID
+			}
+		}
+	}
+
 	return uc.repoMongo.AclRepo.Save(ctx, &aclData)
 }
 
@@ -161,24 +198,19 @@ func (uc *aclUsecaseImpl) CheckPermission(ctx context.Context, userID string, pe
 
 	var roles []string
 	for _, a := range acl {
+		if _, ok := a.AdditionalPermissions[permissionCode]; ok {
+			return a.RoleID, nil
+		}
 		roles = append(roles, a.RoleID)
 	}
 
 	roleGroup := uc.repoMongo.RoleRepo.GroupByID(ctx, roles...)
-	hasAccess := false
 	for _, role := range roleGroup {
 		if _, ok := role.Permissions[permissionCode]; ok {
-			hasAccess = true
-			roleID = role.ID
-			break
+			return role.ID, nil
 		}
 	}
-
-	if !hasAccess {
-		return roleID, errors.New("Access not found")
-	}
-
-	return
+	return roleID, errors.New("Access not found")
 }
 
 func (uc *aclUsecaseImpl) GetAllRole(ctx context.Context, filter domain.RoleListFilter) (data []domain.RoleResponse, meta candishared.Meta, err error) {

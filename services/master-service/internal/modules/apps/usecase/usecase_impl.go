@@ -188,8 +188,12 @@ func (uc *appsUsecaseImpl) GetAllUserPermissions(ctx context.Context, appsCode, 
 		Filter: candishared.Filter{ShowAll: true},
 		AppsID: apps.ID,
 	}
+	var filterPermisionsID []string
 	for _, access := range acl {
 		filterRole.RoleIDs = append(filterRole.RoleIDs, access.RoleID)
+		for _, id := range access.AdditionalPermissions {
+			filterPermisionsID = append(filterPermisionsID, id)
+		}
 	}
 
 	roles, err := uc.repoMongo.RoleRepo.FetchAll(ctx, filterRole)
@@ -202,42 +206,19 @@ func (uc *appsUsecaseImpl) GetAllUserPermissions(ctx context.Context, appsCode, 
 	}
 	for _, role := range roles {
 		for _, id := range role.Permissions {
-			filterPermission.PermissionIDs = append(filterPermission.PermissionIDs, id)
+			filterPermisionsID = append(filterPermisionsID, id)
 		}
 	}
-	if len(filterPermission.PermissionIDs) == 0 {
+	if len(filterPermisionsID) == 0 {
 		return data, errors.New("Permission not found")
 	}
+	filterPermission.PermissionIDs = filterPermisionsID
 
 	permissions, err := uc.repoMongo.PermissionRepo.FetchAll(ctx, filterPermission)
 	if err != nil {
 		return data, err
 	}
-
-	permParentGroups := make(map[string][]shareddomain.Permission)
-	for _, perm := range permissions {
-		permParentGroups[perm.ParentID] = append(permParentGroups[perm.ParentID], perm)
-		if perm.ParentID == "" {
-			data = append(data, perm)
-		}
-	}
-
-	var findAllChild func(parentID string) []shareddomain.Permission
-	findAllChild = func(parentID string) (childs []shareddomain.Permission) {
-		childs = permParentGroups[parentID]
-		for i, c := range childs {
-			c.AppsID = ""
-			c.Childs = append(c.Childs, findAllChild(c.ID)...)
-			childs[i] = c
-		}
-		return childs
-	}
-
-	for i, perm := range data {
-		perm.AppsID = ""
-		perm.Childs = append(perm.Childs, findAllChild(perm.ID)...)
-		data[i] = perm
-	}
+	data = shareddomain.MakeTreePermission(permissions)
 
 	return
 }
@@ -250,6 +231,10 @@ func (uc *appsUsecaseImpl) GetUserApps(ctx context.Context, userID string) (data
 	acl, err := uc.repoMongo.AclRepo.FindByUserID(ctx, userID)
 	if err != nil {
 		return data, err
+	}
+
+	if len(acl) == 0 {
+		return
 	}
 
 	var appIDs, roleIDs []string

@@ -19,7 +19,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -36,9 +36,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{urlMaster}}/v1/apps",
+							"raw": "{{urlMasterProd}}/v1/apps",
 							"host": [
-								"{{urlMaster}}"
+								"{{urlMasterProd}}"
 							],
 							"path": [
 								"v1",
@@ -103,7 +103,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -111,9 +111,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/v1/apps/permission/:id",
+							"raw": "{{urlMaster}}/v1/apps/permission/:id",
 							"host": [
-								"{{url}}"
+								"{{urlMaster}}"
 							],
 							"path": [
 								"v1",
@@ -168,6 +168,35 @@
 					"response": []
 				},
 				{
+					"name": "Get Me Apps",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{urlMaster}}/v1/apps/me",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"apps",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Save Apps",
 					"request": {
 						"auth": {
@@ -175,7 +204,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -212,7 +241,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3Jpc2VkIjp0cnVlLCJkaWQiOiI5IiwiZW1haWwiOiJhZ3VuZ2R3aXByYXNldHlvMjNAZ21haWwuY29tIiwiZXhwIjoxNjEzNTc3NTc3LCJpYXQiOjE2MTM1NzM5NzcsInVuaXRfY29kZSI6IjEwMDAxIiwidXNlcmlkIjoiYWd1bmdkcDIyIn0.noU5hkW49ahi3J-MtFxw0EPnWJegUCp8INBNtqPIKSPwLv5si_D2ytFGzZxOAMTiovoKaRCSAe8MzbOccMpVJXkAEee2UXGgoYWnevN2W9gU3LDBr3M4nEUpj1f_k5SAJuaV5q1OiFufTBYczR5QtNL-HBH4xr4lD9rWjANuOuuWcuYpiKplwQm78gWtN68K7N2GY6bryDBTn13tTVB-bU8aHaHScGAqm_jn48m7gyGKs_GHdAf2TWGaLndM1K_OiwqVfnw7fS_jhHwgFt3zn1BYkGtos_ebRdlEBo36XcW_W1eRuy_ZdJtF7OxoZJ31mSKp1T9dqqLvLJq2N_tuxQ",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -221,7 +250,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"code\": \"member\",\n    \"name\": \"Member\",\n    \"childs\": [\n        {\n            \"code\": \"getAllMember\",\n            \"name\": \"Get All Member\",\n            \"childs\": [\n                {\n                    \"code\": \"getDetailMember\",\n                    \"name\": \"Get Detail Member\"\n                },\n                {\n                    \"code\": \"addMember\",\n                    \"name\": \"Add Member\"\n                },\n                {\n                    \"code\": \"updateMember\",\n                    \"name\": \"Update Member\"\n                },\n                {\n                    \"code\": \"deleteMember\",\n                    \"name\": \"Delete Member\"\n                }\n            ]\n        }\n    ]\n}",
+							"raw": "{\n    \"code\": \"user\",\n    \"name\": \"User\",\n    \"childs\": [\n        {\n            \"code\": \"getAllUser\",\n            \"name\": \"Get All User\",\n            \"childs\": [\n                {\n                    \"code\": \"assignRole\",\n                    \"name\": \"Assign Role\"\n                },\n                {\n                    \"code\": \"revokeRole\",\n                    \"name\": \"Revoke Role\"\n                }\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -242,7 +271,7 @@
 							"variable": [
 								{
 									"key": "appId",
-									"value": "6039cbed269d2b4f8a742d65"
+									"value": "603df80e5c6728aad3f488de"
 								}
 							]
 						}
@@ -270,7 +299,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{urlMaster}}/v1/acl/role?page=1&limit=10",
+							"raw": "{{urlMaster}}/v1/acl/role?page=1&limit=10&apps_id=6039cbed269d2b4f8a742d65",
 							"host": [
 								"{{urlMaster}}"
 							],
@@ -290,8 +319,7 @@
 								},
 								{
 									"key": "apps_id",
-									"value": "60392a39bb2a2c9ed3a1bd39",
-									"disabled": true
+									"value": "6039cbed269d2b4f8a742d65"
 								}
 							]
 						}
@@ -299,7 +327,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Role Copy",
+					"name": "Get Detail Role",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -314,28 +342,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{urlMaster}}/v1/acl/role?page=1&limit=10",
+							"raw": "{{urlMaster}}/v1/acl/role/:id",
 							"host": [
 								"{{urlMaster}}"
 							],
 							"path": [
 								"v1",
 								"acl",
-								"role"
+								"role",
+								":id"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								},
-								{
-									"key": "apps_id",
-									"value": "60392a39bb2a2c9ed3a1bd39",
-									"disabled": true
+									"key": "id",
+									"value": "603df8665c6728aad3f488e5"
 								}
 							]
 						}
@@ -359,7 +379,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"appsCode\": \"user-service\",\n    \"code\": \"admin\",\n    \"name\": \"Administrator\",\n    \"permissions\": [\n        \"member.getAllMember\",\n        \"member.updateMember\",\n        \"member.deleteMember\",\n        \"merchant.getAllMerchant\",\n        \"merchant.getDetailMerchant\"\n    ]\n}",
+							"raw": "{\n    \"appsCode\": \"user-service\",\n    \"code\": \"admin\",\n    \"name\": \"Administrator\",\n    \"permissions\": [\n        \"addMember\"\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -397,7 +417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"603654e24ee5d10ae94ea0c5\",\n    \"roleId\": \"603dd2989d2d2de9d53df116\"\n}",
+							"raw": "{\n    \"userId\": \"60613ad56156e3af60ed8bb1\",\n    \"roleId\": \"6040b027b27011b2badddaf6\",\n    \"additionalPermission\": [\n        \"updateMember\"\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -451,6 +471,45 @@
 								"v1",
 								"acl",
 								"checkpermission"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke User Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"603654e24ee5d10ae94ea0c5\",\n    \"roleId\": \"603dc39e114a484ee3da4dfe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlMaster}}/v1/acl/role/revoke",
+							"host": [
+								"{{urlMaster}}"
+							],
+							"path": [
+								"v1",
+								"acl",
+								"role",
+								"revoke"
 							]
 						}
 					},
