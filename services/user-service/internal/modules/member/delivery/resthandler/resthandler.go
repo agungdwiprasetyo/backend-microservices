@@ -39,6 +39,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 	member := v1Root.Group("/member", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 	member.GET("", h.getAllMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllMember")))
 	member.POST("", h.addMember, echo.WrapMiddleware(h.mw.HTTPPermissionACL("addMember")))
+	member.GET("/me", h.getMe)
 }
 
 func (h *RestHandler) getAllMember(c echo.Context) error {
@@ -59,7 +60,7 @@ func (h *RestHandler) getAllMember(c echo.Context) error {
 }
 
 func (h *RestHandler) addMember(c echo.Context) error {
-	trace := tracer.StartTrace(c.Request().Context(), "DeliveryREST:Hello")
+	trace := tracer.StartTrace(c.Request().Context(), "DeliveryREST:AddMember")
 	defer trace.Finish()
 	ctx := trace.Context()
 
@@ -73,4 +74,19 @@ func (h *RestHandler) addMember(c echo.Context) error {
 	}
 
 	return wrapper.NewHTTPResponse(http.StatusOK, "ok").JSON(c.Response())
+}
+
+func (h *RestHandler) getMe(c echo.Context) error {
+	trace := tracer.StartTrace(c.Request().Context(), "DeliveryREST:GetMe")
+	defer trace.Finish()
+	ctx := trace.Context()
+
+	tokenClaim := candishared.ParseTokenClaimFromContext(ctx)
+
+	data, err := h.uc.GetMemberByID(ctx, tokenClaim.Subject)
+	if err != nil {
+		return wrapper.NewHTTPResponse(http.StatusOK, err.Error()).JSON(c.Response())
+	}
+
+	return wrapper.NewHTTPResponse(http.StatusOK, "success", data).JSON(c.Response())
 }

@@ -37,15 +37,6 @@ func NewAuthUsecase(deps dependency.Dependency) AuthUsecase {
 	}
 }
 
-func (uc *authUsecaseImpl) Hello(ctx context.Context) (msg string) {
-	trace := tracer.StartTrace(ctx, "AuthUsecase:Hello")
-	defer trace.Finish()
-	ctx = trace.Context()
-
-	msg, _ = uc.repoMongo.AuthRepo.FindHello(ctx)
-	return
-}
-
 func (uc *authUsecaseImpl) Login(ctx context.Context, req *domain.LoginRequest) (resp domain.LoginResponse, err error) {
 	trace := tracer.StartTrace(ctx, "AuthUsecase:Login")
 	defer trace.Finish()

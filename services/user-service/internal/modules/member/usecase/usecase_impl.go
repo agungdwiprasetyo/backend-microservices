@@ -32,14 +32,6 @@ func NewMemberUsecase(deps dependency.Dependency) MemberUsecase {
 	}
 }
 
-func (uc *memberUsecaseImpl) Hello(ctx context.Context) (msg string) {
-	trace := tracer.StartTrace(ctx, "MemberUsecase:Hello")
-	defer trace.Finish()
-	ctx = trace.Context()
-
-	return
-}
-
 func (uc *memberUsecaseImpl) Save(ctx context.Context, data *shareddomain.Member) (err error) {
 	trace := tracer.StartTrace(ctx, "MemberUsecase:FindAll")
 	defer trace.Finish()
@@ -55,6 +47,7 @@ func (uc *memberUsecaseImpl) GetMemberByID(ctx context.Context, id string) (data
 
 	data.ID = id
 	err = uc.repoMongo.MemberRepo.Find(ctx, &data)
+	data.Password = ""
 	return
 }
 

@@ -55,6 +55,7 @@ func (r *memberRepoMongo) FetchAll(ctx context.Context, filter candishared.Filte
 		if err != nil {
 			return data, err
 		}
+		app.Password = ""
 		data = append(data, app)
 	}
 

@@ -4,9 +4,7 @@ package auth
 
 import (
 	"monorepo/services/user-service/internal/modules/auth/delivery/graphqlhandler"
-	// "monorepo/services/user-service/internal/modules/auth/delivery/grpchandler"
 	"monorepo/services/user-service/internal/modules/auth/delivery/resthandler"
-	"monorepo/services/user-service/internal/modules/auth/delivery/workerhandler"
 	"monorepo/services/user-service/pkg/shared/usecase"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
@@ -37,7 +35,7 @@ func NewModule(deps dependency.Dependency) *Module {
 	mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Auth(), deps.GetValidator())
 
 	mod.workerHandlers = map[types.Worker]interfaces.WorkerHandler{
-		types.Kafka: workerhandler.NewKafkaHandler(usecaseUOW.Auth(), deps.GetValidator()),
+		// types.Kafka: workerhandler.NewKafkaHandler(usecaseUOW.Auth(), deps.GetValidator()),
 		// types.Scheduler:       workerhandler.NewCronHandler(usecaseUOW.Auth(), deps.GetValidator()),
 		// types.RedisSubscriber: workerhandler.NewRedisHandler(usecaseUOW.Auth(), deps.GetValidator()),
 		// types.TaskQueue:       workerhandler.NewTaskQueueHandler(usecaseUOW.Auth(), deps.GetValidator()),

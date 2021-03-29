@@ -21,5 +21,5 @@ func (q *queryResolver) Hello(ctx context.Context) (string, error) {
 
 	tokenClaim := candishared.ParseTokenClaimFromContext(ctx) // must using GraphQLBearerAuth in middleware for this resolver
 
-	return q.root.uc.Hello(ctx) + ", with your session (" + tokenClaim.Audience + ")", nil
+	return ", with your session (" + tokenClaim.Audience + ")", nil
 }

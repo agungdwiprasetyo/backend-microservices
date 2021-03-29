@@ -11,8 +11,6 @@ import (
 
 // MemberUsecase abstraction
 type MemberUsecase interface {
-	// add method
-	Hello(ctx context.Context) string
 	Save(ctx context.Context, data *shareddomain.Member) (err error)
 	GetAllMember(ctx context.Context, filter candishared.Filter) (data []shareddomain.Member, meta candishared.Meta, err error)
 	GetMemberByID(ctx context.Context, id string) (data shareddomain.Member, err error)
