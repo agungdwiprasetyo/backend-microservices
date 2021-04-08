@@ -5,7 +5,6 @@ package storage
 import (
 	// "monorepo/services/storage-service/internal/modules/storage/delivery/graphqlhandler"
 	"monorepo/services/storage-service/internal/modules/storage/delivery/grpchandler"
-	"monorepo/services/storage-service/internal/modules/storage/delivery/resthandler"
 
 	// "monorepo/services/storage-service/internal/modules/storage/delivery/workerhandler"
 	"monorepo/services/storage-service/pkg/shared/usecase"
@@ -33,7 +32,7 @@ func NewModule(deps dependency.Dependency) *Module {
 	usecaseUOW := usecase.GetSharedUsecase()
 
 	var mod Module
-	mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Storage(), deps.GetValidator())
+	// mod.restHandler = resthandler.NewRestHandler(deps.GetMiddleware(), usecaseUOW.Storage(), deps.GetValidator())
 	mod.grpcHandler = grpchandler.NewGRPCHandler(deps.GetMiddleware(), usecaseUOW.Storage(), deps.GetValidator())
 	// mod.graphqlHandler = graphqlhandler.NewGraphQLHandler(deps.GetMiddleware(), usecaseUOW.Storage(), deps.GetValidator())
 

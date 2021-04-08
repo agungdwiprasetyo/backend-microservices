@@ -68,11 +68,13 @@ func (u *storageGRPCImpl) Upload(ctx context.Context, file io.Reader, header Hea
 	}()
 	ctx = trace.Context()
 
-	md := metadata.Pairs("authorization", u.authKey,
+	md := metadata.Pairs(
+		"authorization", u.authKey,
 		"filename", header.Filename,
 		"folder", header.Folder,
 		"contentType", header.ContentType,
-		"size", strconv.Itoa(int(header.Size)))
+		"size", strconv.Itoa(int(header.Size)),
+	)
 	trace.InjectGRPCMetadata(md)
 
 	ctx = metadata.NewOutgoingContext(ctx, md)

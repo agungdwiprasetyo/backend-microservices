@@ -15,21 +15,24 @@ spec:
         app: dev-auth-service
     spec:
       containers:
-        - name: dev-auth-service
-          image: docker.io/agungdp22/auth-service:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8008
+      - name: dev-auth-service
+        image: gcr.io/agungdp-218613/auth-service:latest
+        ports:
+          - containerPort: 8002
+      imagePullSecrets: 
+        - name: gcr-json-key
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: dev-auth-service
 spec:
+  type: LoadBalancer
   ports:
     - name: tcp-listener
-      targetPort: 8008
+      targetPort: 8002
       port: 80
+      protocol: TCP
   selector:
     app: dev-auth-service
 
