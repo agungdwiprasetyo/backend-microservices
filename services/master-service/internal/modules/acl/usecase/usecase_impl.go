@@ -71,6 +71,13 @@ func (uc *aclUsecaseImpl) SaveRole(ctx context.Context, payload domain.AddRoleRe
 
 	currentRole.Permissions = map[string]string{}
 	for _, permCode := range payload.Permissions {
+		if permCode == "*" {
+			for _, perm := range permList {
+				currentRole.Permissions[perm.Code] = perm.ID
+			}
+			break
+		}
+
 		perm := shareddomain.Permission{Code: permCode}
 		if err := uc.repoMongo.PermissionRepo.Find(ctx, &perm); err != nil {
 			return resp, fmt.Errorf("Permission data '%s' not found", permCode)

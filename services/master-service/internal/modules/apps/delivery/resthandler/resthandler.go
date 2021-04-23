@@ -39,7 +39,7 @@ func (h *RestHandler) Mount(root *echo.Group) {
 
 	apps := v1Root.Group("/apps", echo.WrapMiddleware(h.mw.HTTPBearerAuth))
 	apps.GET("", h.getAllApps, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllApps")))
-	apps.GET("/:code", h.getDetailAppByCode, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getDetailApps")))
+	apps.GET("/:code", h.getDetailAppByCode, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getDetailApp")))
 	apps.POST("", h.saveApps, echo.WrapMiddleware(h.mw.HTTPPermissionACL("addApps")))
 	apps.POST("/permission/:id", h.saveAppPermission, echo.WrapMiddleware(h.mw.HTTPPermissionACL("saveAppPermission")))
 	apps.GET("/permission", h.getAllPermissions, echo.WrapMiddleware(h.mw.HTTPPermissionACL("getAllPermissions")))
