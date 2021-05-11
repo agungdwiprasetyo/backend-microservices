@@ -39,11 +39,9 @@ func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	// h.uc.Hello(ctx)
-	time.Sleep(2 * time.Second)
-
+	time.Sleep(100 * time.Millisecond)
 	return &candishared.ErrorRetrier{
-		Delay:   10 * time.Second,
+		Delay:   2 * time.Second,
 		Message: "Error one",
 	}
 }
@@ -52,8 +50,6 @@ func (h *TaskQueueHandler) taskTwo(ctx context.Context, message []byte) error {
 	trace := tracer.StartTrace(ctx, "TokenDeliveryTaskQueue:Hello")
 	defer trace.Finish()
 	ctx = trace.Context()
-
-	// h.uc.Hello(ctx)
 
 	return &candishared.ErrorRetrier{
 		Delay:   3 * time.Second,
