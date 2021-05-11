@@ -8,7 +8,7 @@ import (
 
 	"monorepo/services/auth-service/internal/modules/token/usecase"
 
-	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
+	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -42,7 +42,7 @@ func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {
 	// h.uc.Hello(ctx)
 	time.Sleep(2 * time.Second)
 
-	return &taskqueueworker.ErrorRetrier{
+	return &candishared.ErrorRetrier{
 		Delay:   10 * time.Second,
 		Message: "Error one",
 	}
@@ -55,7 +55,7 @@ func (h *TaskQueueHandler) taskTwo(ctx context.Context, message []byte) error {
 
 	// h.uc.Hello(ctx)
 
-	return &taskqueueworker.ErrorRetrier{
+	return &candishared.ErrorRetrier{
 		Delay:   3 * time.Second,
 		Message: "Error two",
 	}

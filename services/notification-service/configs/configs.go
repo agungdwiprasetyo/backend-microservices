@@ -11,9 +11,8 @@ import (
 	"monorepo/services/notification-service/pkg/shared/repository"
 	"monorepo/services/notification-service/pkg/shared/usecase"
 
-	"pkg.agungdp.dev/candi/codebase/factory/dependency"
-	// "pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/candihelper"
+	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/config"
 	"pkg.agungdp.dev/candi/config/broker"
@@ -31,7 +30,8 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 
 	baseCfg.LoadFunc(func(ctx context.Context) []interfaces.Closer {
 		brokerDeps := broker.InitBrokers(
-		// types.Kafka,
+		// broker.SetKafka(broker.NewKafkaBroker()),
+		// broker.SetRabbitMQ(broker.NewRabbitMQBroker()),
 		)
 		redisDeps := database.InitRedis()
 		// sqlDeps := database.InitSQLDatabase()

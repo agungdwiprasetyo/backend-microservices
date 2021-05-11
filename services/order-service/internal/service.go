@@ -4,6 +4,7 @@ package orderservice
 
 import (
 	"pkg.agungdp.dev/candi/codebase/factory"
+	"pkg.agungdp.dev/candi/codebase/factory/appfactory"
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/config"
@@ -15,9 +16,11 @@ import (
 
 // Service model
 type Service struct {
-	deps    dependency.Dependency
-	modules []factory.ModuleFactory
-	name    types.Service
+	cfg          *config.Config
+	deps         dependency.Dependency
+	applications []factory.AppServerFactory
+	modules      []factory.ModuleFactory
+	name         types.Service
 }
 
 // NewService in this service
@@ -29,16 +32,36 @@ func NewService(serviceName string, cfg *config.Config) factory.ServiceFactory {
 		order.NewModule(deps),
 	}
 
-	return &Service{
+	s := &Service{
+		cfg:     cfg,
 		deps:    deps,
 		modules: modules,
-		name:    types.Service(serviceName),
+		name:    types.Service(cfg.ServiceName),
 	}
+
+	s.applications = appfactory.NewAppFromEnvironmentConfig(s)
+
+	// Add custom application runner, must implement `factory.AppServerFactory` methods
+	s.applications = append(s.applications, []factory.AppServerFactory{
+		// customApplication
+	}...)
+
+	return s
+}
+
+// GetConfig method
+func (s *Service) GetConfig() *config.Config {
+	return s.cfg
 }
 
 // GetDependency method
 func (s *Service) GetDependency() dependency.Dependency {
 	return s.deps
+}
+
+// GetApplications method
+func (s *Service) GetApplications() []factory.AppServerFactory {
+	return s.applications
 }
 
 // GetModules method
