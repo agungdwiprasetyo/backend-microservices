@@ -1,4 +1,4 @@
-input FilterListInput {
+input FilterListInputResolver {
 	limit: Int
 	page: Int
 	"Optional (asc desc)"

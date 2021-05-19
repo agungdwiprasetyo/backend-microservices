@@ -3,20 +3,15 @@
 schema {
 	query: Query
 	mutation: Mutation
-	subscription: Subscription
+	# subscription: Subscription
 }
 
 type Query {
-	auth: AuthQueryModule
-	member: MemberQueryModule
+	auth: AuthQueryResolver
+	member: MemberQueryResolver
 }
 
 type Mutation {
-	auth: AuthMutationModule
-	member: MemberMutationModule
-}
-
-type Subscription {
-	auth: AuthSubscriptionModule
-	member: MemberSubscriptionModule
+	auth: AuthMutationResolver
+	member: MemberMutationResolver
 }

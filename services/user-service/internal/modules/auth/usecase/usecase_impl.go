@@ -63,6 +63,7 @@ func (uc *authUsecaseImpl) Login(ctx context.Context, req *domain.LoginRequest) 
 	}
 
 	resp.Profile = member
-	resp.Token = token
+	resp.Token = token.Token
+	resp.RefreshToken = token.RefreshToken
 	return
 }

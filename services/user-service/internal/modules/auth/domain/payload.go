@@ -13,7 +13,8 @@ type LoginRequest struct {
 
 // LoginResponse request payload
 type LoginResponse struct {
-	Token    string                   `json:"token"`
-	Profile  shareddomain.Member      `json:"profile"`
-	UserApps []masterservice.UserApps `json:"userApps"`
+	Token        string                   `json:"token"`
+	RefreshToken string                   `json:"refresh_token"`
+	Profile      shareddomain.Member      `json:"profile"`
+	UserApps     []masterservice.UserApps `json:"userApps"`
 }
