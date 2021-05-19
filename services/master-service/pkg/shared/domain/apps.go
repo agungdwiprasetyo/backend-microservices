@@ -20,28 +20,26 @@ type Apps struct {
 	Permissions  []Permission `json:"permission,omitempty" bson:"-"`
 }
 
-// Module model
-type Module struct {
-	ID           string       `json:"id" bson:"_id"`
-	AppsID       string       `json:"appsId" bson:"appsId"`
-	Code         string       `json:"code" bson:"code"`
-	Name         string       `json:"name" bson:"name"`
-	Icon         string       `json:"icon" bson:"icon"`
-	CreatedAt    string       `json:"createdAt" bson:"-"`
-	ModifiedAt   string       `json:"modifiedAt" bson:"-"`
-	CreatedAtDB  time.Time    `json:"-" bson:"createdAt"`
-	ModifiedAtDB time.Time    `json:"-" bson:"modifiedAt"`
-	Permissions  []Permission `json:"permission" bson:"-"`
+// CollectionName for model
+func (Apps) CollectionName() string {
+	return "apps"
+}
+
+// TableName for model
+func (Apps) TableName() string {
+	return "apps"
 }
 
 // Permission model
 type Permission struct {
 	ID           string       `json:"id" bson:"_id"`
-	AppsID       string       `json:"appsId,omitempty" bson:"appsId"`
+	AppsID       string       `json:"apps_id,omitempty" bson:"appsId"`
 	Code         string       `json:"code" bson:"code"`
 	Name         string       `json:"name" bson:"name"`
 	Icon         string       `json:"icon" bson:"icon"`
-	ParentID     string       `json:"parentId,omitempty" bson:"parentId"`
+	URL          string       `json:"url" bson:"url"`
+	NewPage      bool         `json:"new_page" bson:"new_page"`
+	ParentID     string       `json:"parent_id,omitempty" bson:"parentId"`
 	Childs       []Permission `json:"childs" bson:"-"`
 	CreatedAt    string       `json:"-" bson:"-"`
 	ModifiedAt   string       `json:"-" bson:"-"`
@@ -49,13 +47,23 @@ type Permission struct {
 	ModifiedAtDB time.Time    `json:"-" bson:"modifiedAt"`
 }
 
+// CollectionName for model
+func (Permission) CollectionName() string {
+	return "apps_permissions"
+}
+
+// TableName for model
+func (Permission) TableName() string {
+	return "apps_permissions"
+}
+
 // GetAllVisitedPath func using BFS
-func (permissions Permission) GetAllVisitedPath() (nodeVisitedPaths map[string][]Permission) {
+func (p Permission) GetAllVisitedPath() (nodeVisitedPaths map[string][]Permission) {
 	visited := make(map[string]struct{})
 	nodeVisitedPaths = make(map[string][]Permission)
 	queue := list.New()
-	queue.PushBack(permissions)
-	visited[permissions.Code] = struct{}{}
+	queue.PushBack(p)
+	visited[p.Code] = struct{}{}
 
 	for queue.Len() > 0 {
 		qNode := queue.Front()

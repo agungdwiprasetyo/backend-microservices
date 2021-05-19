@@ -3,18 +3,14 @@
 schema {
 	query: Query
 	mutation: Mutation
-	subscription: Subscription
 }
 
 type Query {
-	apps: AppsQueryModule
-	acl: AclQueryModule
+	master_acl: AclQueryResolver
+	master_apps: AppsQueryResolver
 }
 
 type Mutation {
-	apps: AppsMutationModule
-}
-
-type Subscription {
-	apps: AppsSubscriptionModule
+	master_acl: AclMutationResolver
+	master_apps: AppsMutationResolver
 }

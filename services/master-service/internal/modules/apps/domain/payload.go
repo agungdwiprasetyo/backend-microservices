@@ -14,5 +14,7 @@ type PermissionRequest struct {
 	Code     string              `json:"code"`
 	Name     string              `json:"name"`
 	Icon     string              `json:"icon"`
+	URL      string              `json:"url"`
+	NewPage  bool                `json:"new_page"`
 	Childs   []PermissionRequest `json:"childs"`
 }
