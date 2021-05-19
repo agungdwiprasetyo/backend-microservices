@@ -70,7 +70,7 @@ func createSeed(ctx context.Context, db interfaces.MongoDatabase) {
 	appsRepo := appsrepo.NewAppsRepoMongo(db.ReadDB(), db.WriteDB())
 	permissionRepo := appsrepo.NewPermissionRepoMongo(db.ReadDB(), db.WriteDB())
 
-	appsData := domain.Apps{Code: "caterpillar", Name: "Caterpillar"}
+	appsData := domain.Apps{Code: "master-service", Name: "Master Service"}
 	if err := appsRepo.Save(ctx, &appsData); err != nil {
 		panic(err)
 	}
