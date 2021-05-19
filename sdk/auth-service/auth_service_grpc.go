@@ -96,7 +96,7 @@ func (a *authServiceGRPCImpl) ValidateToken(ctx context.Context, token string) (
 	return
 }
 
-func (a *authServiceGRPCImpl) GenerateToken(ctx context.Context, req PayloadGenerateToken) (token string, err error) {
+func (a *authServiceGRPCImpl) GenerateToken(ctx context.Context, req PayloadGenerateToken) (data *ResponseGenerateToken, err error) {
 	trace := tracer.StartTrace(ctx, "AuthServiceSDK:GenerateToken")
 	defer func() {
 		if r := recover(); r != nil {
@@ -129,6 +129,9 @@ func (a *authServiceGRPCImpl) GenerateToken(ctx context.Context, req PayloadGene
 	}
 	tracer.Log(ctx, "response.data", resp)
 
-	token = resp.Data.Token
+	data = &ResponseGenerateToken{
+		Token:        resp.Data.Token,
+		RefreshToken: resp.Data.RefreshToken,
+	}
 	return
 }

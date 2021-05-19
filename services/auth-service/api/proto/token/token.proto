@@ -40,7 +40,8 @@ message ResponseGenerate {
 
     message Token {
         string Token = 1;
-        ClaimData Claim = 2;
+        string RefreshToken = 2;
+        ClaimData Claim = 3;
     }
 
     Token Data = 2;
