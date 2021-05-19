@@ -1,5 +1,5 @@
 # Stage 1
-FROM golang:1.16.0-alpine3.13 AS dependency_builder
+FROM golang:1.16.4-alpine3.13 AS dependency_builder
 
 WORKDIR /go/src
 ENV GO111MODULE=on
