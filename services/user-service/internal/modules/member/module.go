@@ -6,8 +6,7 @@ import (
 	"monorepo/services/user-service/internal/modules/member/delivery/graphqlhandler"
 	"monorepo/services/user-service/internal/modules/member/delivery/grpchandler"
 	"monorepo/services/user-service/internal/modules/member/delivery/resthandler"
-
-	// "monorepo/services/user-service/internal/modules/member/delivery/workerhandler"
+	"monorepo/services/user-service/internal/modules/member/delivery/workerhandler"
 	"monorepo/services/user-service/pkg/shared/usecase"
 
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
@@ -41,7 +40,7 @@ func NewModule(deps dependency.Dependency) *Module {
 		// types.Kafka:           workerhandler.NewKafkaHandler(usecaseUOW.Member(), deps.GetValidator()),
 		// types.Scheduler:       workerhandler.NewCronHandler(usecaseUOW.Member(), deps.GetValidator()),
 		// types.RedisSubscriber: workerhandler.NewRedisHandler(usecaseUOW.Member(), deps.GetValidator()),
-		// types.TaskQueue:       workerhandler.NewTaskQueueHandler(usecaseUOW.Member(), deps.GetValidator()),
+		types.TaskQueue: workerhandler.NewTaskQueueHandler(usecaseUOW.Member(), deps.GetValidator()),
 	}
 
 	return &mod
