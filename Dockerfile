@@ -30,6 +30,7 @@ FROM alpine:latest
 ARG SERVICE_NAME
 ARG BUILD_NUMBER
 RUN apk --no-cache add ca-certificates tzdata
+RUN cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 WORKDIR /root/
 ENV WORKDIR=services/$SERVICE_NAME/
 ENV BUILD_NUMBER=$BUILD_NUMBER
