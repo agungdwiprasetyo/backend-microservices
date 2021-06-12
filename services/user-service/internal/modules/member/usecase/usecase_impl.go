@@ -7,19 +7,23 @@ import (
 	"crypto/sha1"
 	"monorepo/services/user-service/internal/modules/member/domain"
 	"monorepo/services/user-service/pkg/helper"
+	"monorepo/services/user-service/pkg/shared"
 	shareddomain "monorepo/services/user-service/pkg/shared/domain"
 	"monorepo/services/user-service/pkg/shared/repository"
 
+	"github.com/google/uuid"
 	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/dependency"
+	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
 )
 
 type memberUsecaseImpl struct {
-	cache interfaces.Cache
-
+	cache     interfaces.Cache
 	repoMongo *repository.RepoMongo
+	repoSQL   repository.RepoSQL
+	publisher interfaces.Publisher
 }
 
 // NewMemberUsecase usecase impl constructor
@@ -28,13 +32,14 @@ func NewMemberUsecase(deps dependency.Dependency) MemberUsecase {
 		cache: deps.GetRedisPool().Cache(),
 
 		repoMongo: repository.GetSharedRepoMongo(),
+		repoSQL:   repository.GetSharedRepoSQL(),
+		publisher: dependency.GetBroker().Publisher(types.Kafka),
 	}
 }
 
 func (uc *memberUsecaseImpl) GetAllMember(ctx context.Context, filter candishared.Filter) (data []shareddomain.Member, meta candishared.Meta, err error) {
-	trace := tracer.StartTrace(ctx, "MemberUsecase:GetAllMember")
+	trace, ctx := tracer.StartTraceWithContext(ctx, "MemberUsecase:GetAllMember")
 	defer trace.Finish()
-	ctx = trace.Context()
 
 	data, err = uc.repoMongo.MemberRepo.FetchAll(ctx, &filter)
 	if err != nil {
@@ -47,9 +52,8 @@ func (uc *memberUsecaseImpl) GetAllMember(ctx context.Context, filter candishare
 }
 
 func (uc *memberUsecaseImpl) GetDetailMember(ctx context.Context, id string) (data shareddomain.Member, err error) {
-	trace := tracer.StartTrace(ctx, "MemberUsecase:GetDetailMember")
+	trace, ctx := tracer.StartTraceWithContext(ctx, "MemberUsecase:GetDetailMember")
 	defer trace.Finish()
-	ctx = trace.Context()
 
 	data.ID = id
 	err = uc.repoMongo.MemberRepo.Find(ctx, &data)
@@ -58,17 +62,25 @@ func (uc *memberUsecaseImpl) GetDetailMember(ctx context.Context, id string) (da
 }
 
 func (uc *memberUsecaseImpl) SaveMember(ctx context.Context, data *shareddomain.Member) (err error) {
-	trace := tracer.StartTrace(ctx, "MemberUsecase:SaveMember")
+	trace, ctx := tracer.StartTraceWithContext(ctx, "MemberUsecase:SaveMember")
 	defer trace.Finish()
-	ctx = trace.Context()
 
-	return uc.repoMongo.MemberRepo.Save(ctx, data)
+	return uc.repoSQL.WithTransaction(ctx, func(ctx context.Context, repo repository.RepoSQL) error {
+		passHasher := helper.NewPassword(sha1.New, 8, 32, 15000)
+		pass := passHasher.HashPassword(data.Password)
+		member := shareddomain.Member{
+			Username:     data.Username,
+			Fullname:     data.Fullname,
+			Password:     pass.CipherText,
+			PasswordSalt: pass.Salt,
+		}
+		return repo.MemberRepo().Save(ctx, &member)
+	})
 }
 
 func (uc *memberUsecaseImpl) Register(ctx context.Context, data *domain.RegisterPayload) (err error) {
-	trace := tracer.StartTrace(ctx, "MemberUsecase:Register")
+	trace, ctx := tracer.StartTraceWithContext(ctx, "MemberUsecase:Register")
 	defer trace.Finish()
-	ctx = trace.Context()
 
 	passHasher := helper.NewPassword(sha1.New, 8, 32, 15000)
 	pass := passHasher.HashPassword(data.Password)
@@ -80,4 +92,23 @@ func (uc *memberUsecaseImpl) Register(ctx context.Context, data *domain.Register
 		PasswordSalt: pass.Salt,
 	}
 	return uc.repoMongo.MemberRepo.Save(ctx, &member)
+}
+
+func (uc *memberUsecaseImpl) AutoGenerateMember(ctx context.Context) error {
+	trace, ctx := tracer.StartTraceWithContext(ctx, "MemberUsecase:AutoGenerateMember")
+	defer trace.Finish()
+
+	passHasher := helper.NewPassword(sha1.New, 8, 32, 15000)
+	pass := passHasher.HashPassword(uuid.NewString())
+	member := shareddomain.Member{
+		Username:     uuid.NewString(),
+		Fullname:     uuid.NewString(),
+		Password:     pass.CipherText,
+		PasswordSalt: pass.Salt,
+	}
+	return uc.publisher.PublishMessage(ctx, &candishared.PublisherArgument{
+		Topic: shared.GetEnv().KafkaTopicAutoGenerateMember,
+		Key:   member.Username,
+		Data:  member,
+	})
 }

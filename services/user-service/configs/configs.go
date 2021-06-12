@@ -31,11 +31,11 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 
 	baseCfg.LoadFunc(func(ctx context.Context) []interfaces.Closer {
 		brokerDeps := broker.InitBrokers(
-		// broker.SetKafka(broker.NewKafkaBroker()),
+			broker.SetKafka(broker.NewKafkaBroker()),
 		// broker.SetRabbitMQ(broker.NewRabbitMQBroker()),
 		)
 		redisDeps := database.InitRedis()
-		// sqlDeps := database.InitSQLDatabase()
+		sqlDeps := database.InitSQLDatabase()
 		mongoDeps := database.InitMongoDB(ctx)
 
 		authService := authservice.NewAuthServiceGRPC(sharedEnv.AuthServiceHost, sharedEnv.AuthServiceKey)
@@ -52,14 +52,14 @@ func LoadConfigs(baseCfg *config.Config) (deps dependency.Dependency) {
 			dependency.SetValidator(validator.NewValidator()),
 			dependency.SetBroker(brokerDeps),
 			dependency.SetRedisPool(redisDeps),
-			// dependency.SetSQLDatabase(sqlDeps),
+			dependency.SetSQLDatabase(sqlDeps),
 			dependency.SetMongoDatabase(mongoDeps),
 			// ... add more dependencies
 		)
 		return []interfaces.Closer{ // throw back to base config for close connection when application shutdown
 			brokerDeps,
 			redisDeps,
-			// sqlDeps,
+			sqlDeps,
 			mongoDeps,
 		}
 	})

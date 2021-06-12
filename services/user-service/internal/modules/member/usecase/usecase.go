@@ -17,4 +17,5 @@ type MemberUsecase interface {
 	GetDetailMember(ctx context.Context, id string) (data shareddomain.Member, err error)
 	SaveMember(ctx context.Context, data *shareddomain.Member) (err error)
 	Register(ctx context.Context, data *domain.RegisterPayload) (err error)
+	AutoGenerateMember(ctx context.Context) error
 }

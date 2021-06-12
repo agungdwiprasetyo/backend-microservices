@@ -11,6 +11,9 @@ type Environment struct {
 	AuthServiceKey    string `env:"AUTH_SERVICE_KEY"`
 	MasterServiceHost string `env:"MASTER_SERVICE_HOST"`
 	MasterServiceKey  string `env:"MASTER_SERVICE_KEY"`
+
+	KafkaTopicAutoGenerateMember string `env:"KAFKA_TOPIC_AUTO_GENERATE_MEMBER"`
+	TaskAddMember                string `env:"TASK_ADD_MEMBER"`
 }
 
 var sharedEnv Environment

@@ -4,9 +4,12 @@ package workerhandler
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"monorepo/services/user-service/internal/modules/member/usecase"
+	"monorepo/services/user-service/pkg/shared"
+	"monorepo/services/user-service/pkg/shared/domain"
 
 	"pkg.agungdp.dev/candi/candishared"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
@@ -30,32 +33,24 @@ func NewTaskQueueHandler(uc usecase.MemberUsecase, validator interfaces.Validato
 
 // MountHandlers mount handler group
 func (h *TaskQueueHandler) MountHandlers(group *types.WorkerHandlerGroup) {
-	group.Add("member-task-one", h.taskOne)
-	group.Add("member-task-two", h.taskTwo)
+	group.Add(shared.GetEnv().TaskAddMember, h.taskAddMember)
 }
 
-func (h *TaskQueueHandler) taskOne(ctx context.Context, message []byte) error {
-	trace := tracer.StartTrace(ctx, "MemberDeliveryTaskQueue:TaskOne")
+func (h *TaskQueueHandler) taskAddMember(ctx context.Context, message []byte) error {
+	trace := tracer.StartTrace(ctx, "MemberDeliveryTaskQueue:TaskAddMember")
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	if string(message) == "no error" {
-		return nil
+	var member domain.Member
+	if err := json.Unmarshal(message, &member); err != nil {
+		return err
 	}
 
-	return &candishared.ErrorRetrier{
-		Delay:   10 * time.Second,
-		Message: "Error one",
+	if err := h.uc.SaveMember(ctx, &member); err != nil {
+		return &candishared.ErrorRetrier{
+			Delay:   10 * time.Second,
+			Message: err.Error(),
+		}
 	}
-}
-
-func (h *TaskQueueHandler) taskTwo(ctx context.Context, message []byte) error {
-	trace := tracer.StartTrace(ctx, "MemberDeliveryTaskQueue:TaskTwo")
-	defer trace.Finish()
-	ctx = trace.Context()
-
-	return &candishared.ErrorRetrier{
-		Delay:   3 * time.Second,
-		Message: "Error two",
-	}
+	return nil
 }

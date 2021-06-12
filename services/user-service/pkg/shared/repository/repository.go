@@ -15,7 +15,7 @@ var (
 // SetSharedRepository set the global singleton "RepoSQL" and "RepoMongo" implementation
 func SetSharedRepository(deps dependency.Dependency) {
 	once.Do(func() {
-		// setSharedRepoSQL(deps.GetSQLDatabase().ReadDB(), deps.GetSQLDatabase().WriteDB())
+		setSharedRepoSQL(deps.GetSQLDatabase().ReadDB(), deps.GetSQLDatabase().WriteDB())
 		setSharedRepoMongo(deps.GetMongoDatabase().ReadDB(), deps.GetMongoDatabase().WriteDB())
 	})
 }

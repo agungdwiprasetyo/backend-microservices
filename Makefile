@@ -27,6 +27,9 @@ proto: check
 	protoc --proto_path=services/$(service)/api/proto --go_out=plugins=grpc:sdk/$(service)/proto \
 	--go_opt=paths=source_relative $(proto_file);)
 
+migration: check
+	@WORKDIR="services/$(service)/" go run services/$(service)/cmd/migration/*.go
+
 docker: check
 	docker build --build-arg SERVICE_NAME=$(service) -t $(service):latest .
 

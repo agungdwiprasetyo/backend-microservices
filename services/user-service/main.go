@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
+	_ "github.com/lib/pq"
 	"pkg.agungdp.dev/candi/codebase/app"
 	"pkg.agungdp.dev/candi/config"
 

@@ -4,12 +4,10 @@ package workerhandler
 
 import (
 	"context"
-	"fmt"
 
 	"monorepo/services/user-service/internal/modules/member/usecase"
 
 	"pkg.agungdp.dev/candi/candihelper"
-	taskqueueworker "pkg.agungdp.dev/candi/codebase/app/task_queue_worker"
 	"pkg.agungdp.dev/candi/codebase/factory/types"
 	"pkg.agungdp.dev/candi/codebase/interfaces"
 	"pkg.agungdp.dev/candi/tracer"
@@ -35,11 +33,9 @@ func (h *CronHandler) MountHandlers(group *types.WorkerHandlerGroup) {
 }
 
 func (h *CronHandler) handleMember(ctx context.Context, message []byte) error {
-	trace := tracer.StartTrace(ctx, "MemberDeliveryCron:Hello")
+	trace := tracer.StartTrace(ctx, "MemberDeliveryCron:HandleMember")
 	defer trace.Finish()
 	ctx = trace.Context()
 
-	fmt.Println("cron: execute in module member, message:", string(message))
-
-	return taskqueueworker.AddJob("member-task-one", 4, []byte("no error"))
+	return h.uc.AutoGenerateMember(ctx)
 }

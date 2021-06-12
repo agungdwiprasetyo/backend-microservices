@@ -15,5 +15,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.26.0
-	pkg.agungdp.dev/candi v1.5.26
+	gorm.io/driver/postgres v1.1.0
+	gorm.io/gorm v1.21.10
+	pkg.agungdp.dev/candi v1.5.32
 )
